@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--
+  TEMPLATE DE RELATÓRIO STORM RESEARCH
+  Clone este arquivo, preencha todos os {{TOKEN}}, apague os comentários de instrução, repita os
+  blocos repetidos (cards de achados, referências, ações) quantas vezes forem necessárias.
+  Mantenha o bloco <style> exatamente igual. Design = branco limpo e profissional:
+  Títulos em Montserrat, rótulos em Roboto Mono, destaque azul. NÃO troque para estilo desenhado à mão.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Storm Research: {{TOPIC_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue: #2563eb; --blue-dark: #1e3a8a; --ink: #16203a; --muted: #5b6677; --line: #e4e9f2;
+    --bg-soft: #f6f8fc; --green: #15803d; --green-bg: #e9f6ee; --amber: #b45309; --amber-bg: #fdf3e7;
+    --slate: #475569; --slate-bg: #eef1f6; --red: #b91c1c; --red-bg: #fdecec;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Roboto', system-ui, sans-serif; color: var(--ink); background: #eef1f6; line-height: 1.62; font-weight: 400; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 900px; margin: 0 auto; background: #fff; padding: 64px 72px 80px; box-shadow: 0 1px 40px rgba(22,32,58,0.08); }
+  .eyebrow { font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
+  h1 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 40px; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 18px; }
+  .lede { font-size: 17px; color: var(--muted); max-width: 640px; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 26px; padding-top: 22px; border-top: 2px solid var(--line); font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--muted); }
+  .meta-row b { color: var(--ink); font-weight: 600; }
+  .verify-banner { margin-top: 22px; background: var(--green-bg); border: 1px solid #bfe3cc; border-radius: 8px; padding: 13px 18px; font-size: 13px; color: #14532d; display: flex; gap: 10px; align-items: baseline; }
+  .verify-banner b { font-weight: 700; }
+  .verify-banner .tag { font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--green); color: #fff; padding: 3px 8px; border-radius: 4px; flex-shrink: 0; }
+  .howto { margin-top: 18px; border: 1px solid var(--line); border-radius: 8px; padding: 18px 22px; background: var(--bg-soft); }
+  .howto h4 { font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .howto ul { list-style: none; }
+  .howto li { font-size: 13.5px; color: #2b3950; margin-bottom: 7px; padding-left: 16px; position: relative; }
+  .howto li::before { content: "›"; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+  .section { margin-top: 56px; }
+  .section-num { font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 600; color: var(--blue); letter-spacing: 0.05em; }
+  h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 25px; letter-spacing: -0.01em; color: var(--ink); margin: 6px 0 18px; line-height: 1.2; }
+  h2 .bar { display: inline-block; width: 38px; height: 4px; background: var(--blue); border-radius: 2px; vertical-align: middle; margin-right: 14px; }
+  p { margin-bottom: 14px; }
+  p.body-lg { font-size: 16.5px; }
+  .ceo { background: var(--bg-soft); border-left: 5px solid var(--blue); padding: 26px 30px; border-radius: 4px; font-size: 16.5px; }
+  .ceo strong { font-weight: 700; color: var(--blue-dark); }
+  .finding { border: 1px solid var(--line); border-radius: 10px; padding: 24px 26px; margin-bottom: 18px; position: relative; }
+  .finding-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
+  .finding-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 18px; line-height: 1.3; color: var(--ink); flex: 1; }
+  .finding-rank { font-family: 'Roboto Mono', monospace; font-weight: 600; font-size: 13px; color: #fff; background: var(--ink); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .finding p { font-size: 15px; color: #283449; margin-bottom: 14px; }
+  .rel-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .rel { display: inline-flex; align-items: center; gap: 9px; font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; }
+  .rel.high { background: #e7f0fe; color: var(--blue); }
+  .rel.medhigh { background: var(--green-bg); color: var(--green); }
+  .rel.medium { background: var(--amber-bg); color: var(--amber); }
+  .rel.low { background: var(--red-bg); color: var(--red); }
+  .score { font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .score b { font-size: 17px; }
+  .score span { color: var(--muted); font-weight: 400; }
+  .chips { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .chip-row { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; font-size: 13.5px; }
+  .chip-label { font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+  .chip-label.sup { background: var(--green-bg); color: var(--green); }
+  .chip-label.chal { background: var(--red-bg); color: var(--red); }
+  .chip-label.fix { background: var(--amber-bg); color: var(--amber); }
+  .chip-row span.who { color: #2b3950; }
+  .chip-row span.who b { font-weight: 600; }
+  .contested { border: 1px dashed var(--amber); background: #fffaf2; border-radius: 10px; padding: 22px 26px; margin-bottom: 18px; }
+  .contested .tag { font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); }
+  .contested h4 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 16px; color: var(--ink); margin: 6px 0 10px; }
+  .contested p { font-size: 14px; color: #4a3a22; margin-bottom: 0; }
+  .connection { background: linear-gradient(135deg, #16203a 0%, #1e3a8a 100%); color: #eaf0fb; border-radius: 12px; padding: 34px 38px; }
+  .connection h2 { color: #fff; }
+  .connection h2 .bar { background: #6ea8ff; }
+  .connection .section-num { color: #9ec1ff; }
+  .connection p { color: #d3def3; font-size: 16px; }
+  .connection .punch { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: #fff; line-height: 1.4; margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.18); }
+  .assume { border: 1px solid var(--line); border-left: 5px solid var(--amber); border-radius: 6px; padding: 24px 28px; background: #fffdf9; }
+  .assume h3 { font-family: 'Montserrat', sans-serif; font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+  .assume p { font-size: 15px; color: #3a3320; }
+  .assume p:last-child { margin-bottom: 0; }
+  .action-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .action-item:last-child { border-bottom: none; }
+  .action-mark { font-family: 'Roboto Mono', monospace; font-weight: 600; font-size: 13px; color: var(--blue); flex-shrink: 0; width: 34px; }
+  .action-item .do { font-weight: 600; color: var(--ink); }
+  .action-item p { font-size: 14.5px; margin-bottom: 0; color: #2b3950; }
+  .frontier { border: 2px dashed var(--blue); border-radius: 12px; padding: 30px 34px; background: var(--bg-soft); }
+  .frontier .q { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.32; color: var(--blue-dark); margin-bottom: 16px; }
+  .frontier p { font-size: 15px; color: #2b3950; }
+  .oncam { margin-top: 18px; }
+  .oncam-col { border-radius: 10px; padding: 20px 24px; margin-bottom: 14px; }
+  .oncam-col.safe { background: var(--green-bg); border: 1px solid #bfe3cc; }
+  .oncam-col.caveat { background: var(--amber-bg); border: 1px solid #f0d9b5; }
+  .oncam-col.avoid { background: var(--red-bg); border: 1px solid #f3c9c9; }
+  .oncam-col h4 { font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .oncam-col.safe h4 { color: var(--green); }
+  .oncam-col.caveat h4 { color: var(--amber); }
+  .oncam-col.avoid h4 { color: var(--red); }
+  .oncam-col ul { list-style: none; }
+  .oncam-col li { font-size: 14px; color: #233; margin-bottom: 8px; padding-left: 16px; position: relative; line-height: 1.5; }
+  .oncam-col li::before { content: "•"; position: absolute; left: 0; font-weight: 700; }
+  .oncam-col.safe li::before { color: var(--green); }
+  .oncam-col.caveat li::before { color: var(--amber); }
+  .oncam-col.avoid li::before { color: var(--red); }
+  .refs { margin-top: 56px; padding-top: 26px; border-top: 2px solid var(--line); }
+  .refs h3 { font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .refs ul { list-style: none; }
+  .refs li { font-size: 12.5px; color: var(--muted); margin-bottom: 11px; padding-left: 16px; position: relative; line-height: 1.5; }
+  .refs li::before { content: "›"; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+  .refs a { color: #34507e; text-decoration: none; }
+  .refs a:hover { text-decoration: underline; }
+  .refs .vstat { font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; margin-right: 6px; }
+  .vstat.ok { background: var(--green-bg); color: var(--green); }
+  .vstat.part { background: var(--amber-bg); color: var(--amber); }
+  .vstat.weak { background: var(--red-bg); color: var(--red); }
+  .footer { margin-top: 40px; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #9aa6b8; text-align: center; }
+  @media (max-width: 640px) { .page { padding: 40px 24px 56px; } h1 { font-size: 30px; } }
+  @media print { body { background: #fff; } .page { box-shadow: none; max-width: 100%; padding: 0; } .connection, .oncam-col { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">Storm Research &middot; v2 (verificado)</div>
+    <h1>{{TOPIC_TITLE}}</h1>
+    <p class="lede">Uma síntese em cinco lentes: profissional prático, acadêmico, cético, economista e historiador. Cada afirmação é checada de forma independente contra sua fonte primária antes da publicação.</p>
+    <div class="meta-row">
+      <span><b>Data</b> &nbsp;{{DATE}}</span>
+      <span><b>Método</b> &nbsp;5 lentes especialistas construídas pelo autor + mapa de contradições</span>
+      <span><b>Público</b> &nbsp;{{AUDIENCE: papel do leitor; omita este span se não houver público definido}}</span>
+    </div>
+    <div class="verify-banner">
+      <span class="tag">Verificado</span>
+      <span>Todas as {{N}} citações foram checadas de forma independente contra fontes primárias em {{DATE}}. <b>Resultado: {{X}} fabricadas, {{Y}} corrigidas, {{Z}} rebaixadas.</b> As pontuações de confiança refletem a qualidade da evidência após a verificação.</span>
+    </div>
+    <div class="howto">
+      <h4>Como ler este relatório</h4>
+      <ul>
+        <li><b>O painel foi construído pelo autor.</b> As cinco lentes compartilham o mesmo enquadramento; portanto, onde elas concordam, trate isso como uma hipótese forte, não como prova independente.</li>
+        <li><b>A confiança é pontuada de 1 a 10</b> com base na qualidade da evidência: estudo causal revisado por pares &gt; dados oficiais/políticos/financeiros &gt; pesquisa única comissionada &gt; analogia &gt; preprint.</li>
+        <li><b>Fato medido e interpretação são sinalizados separadamente.</b> Uma pontuação alta significa que os dados são sólidos, não que a leitura estratégica seja certa.</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ============ 01 CEO SUMMARY ============ -->
+  <section class="section">
+    <div class="section-num">01</div>
+    <h2><span class="bar"></span>Resumo de 60 segundos</h2>
+    <div class="ceo">
+      <p style="margin-bottom:0;">{{CEO_SUMMARY: um parágrafo denso para um decisor com 60 segundos. Comece pelo fato estabelecido, depois apresente a interpretação contestada e então a tensão. Coloque em negrito a frase mais importante. Nuance, não manchete.}}</p>
+    </div>
+  </section>
+
+  <!-- ============ 02 KEY FINDINGS (ranked by reliability, highest first) ============ -->
+  <section class="section">
+    <div class="section-num">02</div>
+    <h2><span class="bar"></span>Cinco achados principais, classificados por confiabilidade</h2>
+
+    <!-- REPITA este bloco .finding 5x. Classe rel: high | medhigh | medium | low. Pontuação 1-10. -->
+    <div class="finding">
+      <div class="finding-head">
+        <div class="finding-title">{{TITULO_DO_ACHADO}}</div>
+        <div class="finding-rank">{{N}}</div>
+      </div>
+      <div class="rel-row">
+        <div class="rel {{RELCLASS}}">Confiabilidade: {{ROTULO_DE_CONFIABILIDADE}}</div>
+        <div class="score"><b>{{SCORE}}</b><span>/10</span></div>
+      </div>
+      <p>{{CORPO_DO_ACHADO: o que afirma, a evidência e a ressalva verificada que limita a pontuação. Coloque em negrito qualquer correção feita durante a verificação.}}</p>
+      <div class="chips">
+        <div class="chip-row"><span class="chip-label sup">Apoiado por</span><span class="who">{{QUAIS LENTES + estudo/fonte real}}</span></div>
+        <div class="chip-row"><span class="chip-label chal">Desafiado por</span><span class="who">{{QUAIS LENTES discordam, ou "Ninguém"}}</span></div>
+        <!-- adicione um chip 'fix' quando a verificação forçar uma correção -->
+        <div class="chip-row"><span class="chip-label fix">Corrigido</span><span class="who">{{o que mudou após a checagem da fonte primária; apague se nada mudou}}</span></div>
+      </div>
+    </div>
+
+    <!-- Barra lateral de afirmações CONTESTADAS / REBAIXADAS. Use para qualquer afirmação marcada como contestada ou preprint na verificação. Apague se não houver. -->
+    <div class="contested">
+      <div class="tag">Sinal contestado &middot; monitore, não afirme &middot; confiança {{SCORE}}/10</div>
+      <h4>{{TITULO_DA_AFIRMACAO}}</h4>
+      <p>{{Por que é contestado: a crítica, a contraevidência e a fonte. Oriente o leitor a não declarar isso como fato.}}</p>
+    </div>
+  </section>
+
+  <!-- ============ 03 HIDDEN CONNECTION ============ -->
+  <section class="section">
+    <div class="connection">
+      <div class="section-num">03</div>
+      <h2><span class="bar"></span>A conexão oculta</h2>
+      <p>{{Apresente a contradição aparente entre dois achados.}}</p>
+      <p>{{Resolva: o elo não óbvio que só aparece ao cruzar as cinco lentes.}}</p>
+      <p class="punch">{{A conclusão de impacto em uma frase. Se depender de um achado fraco, diga isso entre parênteses.}}</p>
+    </div>
+  </section>
+
+  <!-- ============ 03b KEY ASSUMPTION / MISSING 6TH LENS ============ -->
+  <section class="section">
+    <div class="assume">
+      <h3>A suposição em que este briefing se apoia (e a 6ª lente ausente)</h3>
+      <p>{{Quais variáveis as cinco lentes congelaram. Nomeie a 6ª perspectiva que mudaria as conclusões, não apenas acrescentaria nuance.}}</p>
+      <p>{{A omissão que poderia inverter os achados. Construa levando essa ressalva em conta.}}</p>
+    </div>
+  </section>
+
+  <!-- ============ 04 ACTIONABLE INSIGHT ============ -->
+  <section class="section">
+    <div class="section-num">04</div>
+    <h2><span class="bar"></span>O que fazer de forma diferente na prática</h2>
+    <p class="body-lg" style="color:var(--muted);">{{Para quem isto é + enquadramento: movimentos específicos, não princípios.}}</p>
+    <!-- REPITA 3 a 6 itens de ação -->
+    <div class="action-item">
+      <div class="action-mark">{{NN}}</div>
+      <div><span class="do">{{A ação em uma frase.}}</span><p>{{Por quê + exatamente como fazer, ligado a um achado.}}</p></div>
+    </div>
+  </section>
+
+  <!-- ============ 04b CLAIM SAFETY GUIDE (assert / caveat / avoid) ============ -->
+  <section class="section">
+    <div class="section-num">04b</div>
+    <h2><span class="bar"></span>O que é seguro afirmar</h2>
+    <div class="oncam">
+      <div class="oncam-col safe">
+        <h4>✓ Seguro — verificado contra fonte primária</h4>
+        <ul><li>{{Afirmações confirmadas por fontes oficiais/primárias, seguras para declarar de forma direta.}}</li></ul>
+      </div>
+      <div class="oncam-col caveat">
+        <h4>⚠ Diga com ressalva</h4>
+        <ul><li>{{Afirmações que precisam de atribuição ou qualificação.}}</li></ul>
+      </div>
+      <div class="oncam-col avoid">
+        <h4>✕ Não afirme</h4>
+        <ul><li>{{Afirmações contestadas, preprints ou não verificáveis. Nomeie-as para que não voltem ao texto.}}</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 FRONTIER QUESTION ============ -->
+  <section class="section">
+    <div class="section-num">05</div>
+    <h2><span class="bar"></span>A pergunta de fronteira</h2>
+    <div class="frontier">
+      <div class="q">{{A pergunta que mudaria tudo se fosse respondida.}}</div>
+      <p>{{Por que importa: o que ela ameaça, por que nenhuma lente abordou e o que sua resposta destravaria.}}</p>
+    </div>
+  </section>
+
+  <!-- ============ REFERENCES with verification status ============ -->
+  <div class="refs">
+    <h3>Base de evidências &middot; status de verificação</h3>
+    <ul>
+      <!-- REPITA por citação. Classe vstat: ok (confirmado) | part (corrigido/parcial) | weak (rebaixado/preprint/contestado). -->
+      <li><span class="vstat {{ok|part|weak}}">{{Confirmed|Corrigido|Contested|Demoted}}</span> {{Citação completa: autores, ano, título, veículo, dado principal e qualquer limitação encontrada durante a verificação.}} <a href="{{PRIMARY_URL}}">{{domain}}</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">Storm Research v2 &middot; {{N}}/{{N}} citações verificadas de forma independente contra fontes primárias, {{DATE}} &middot; {{X}} fabricadas, {{Y}} corrigidas, {{Z}} rebaixadas &middot; Confiabilidade = qualidade da evidência, não confiança do autor</div>
+
+</div>
+</body>
+</html>

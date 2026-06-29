@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="storm-research">
+  <meta name="description" content="Módulo 3.4 — Boas práticas e armadilhas: os guardrails do método STORM e o checklist final antes de confiar e compartilhar um briefing.">
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+  <title>Módulo 3.4 · Boas práticas e armadilhas | STORM Research</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-purple-400 focus:rounded-lg">Pular para o conteudo</a>
+
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Pratica</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm">
+            <span aria-hidden="true">◷</span><span>Minha jornada</span>
+            <span class="inema-journey-badge" data-inema-journey-badge data-count="0" aria-hidden="true"></span>
+          </button>
+          <div class="relative">
+            <button type="button" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" aria-expanded="false" aria-haspopup="true" title="Aparencia e leitura">
+              <span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Aparencia</span>
+            </button>
+            <div id="appearance-pop" data-inema-appearance class="inema-appearance-pop" data-open="false" style="right:0;">
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Tema</span><div class="inema-segment">
+                <button type="button" data-inema-set-theme="inema-dark">Escuro</button><button type="button" data-inema-set-theme="claro">Claro</button><button type="button" data-inema-set-theme="sepia">Sepia</button><button type="button" data-inema-set-theme="contraste">Alto contraste</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Fonte</span><div class="inema-segment">
+                <button type="button" data-inema-set-font="inter">Inter</button><button type="button" data-inema-set-font="system">Sistema</button><button type="button" data-inema-set-font="leitura">Leitura</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Tamanho</span><div class="inema-segment">
+                <button type="button" data-inema-set-fontscale="100">A</button><button type="button" data-inema-set-fontscale="112">A+</button><button type="button" data-inema-set-fontscale="125">A++</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Entrelinha</span><div class="inema-segment">
+                <button type="button" data-inema-set-leading="1.45">Compacto</button><button type="button" data-inema-set-leading="1.7">Confortavel</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Acento</span><div class="inema-accent-grid">
+                <button type="button" data-inema-set-accent="emerald" data-accent="emerald" title="Esmeralda"></button><button type="button" data-inema-set-accent="blue" data-accent="blue" title="Azul"></button><button type="button" data-inema-set-accent="purple" data-accent="purple" title="Roxo"></button><button type="button" data-inema-set-accent="amber" data-accent="amber" title="Ambar"></button><button type="button" data-inema-set-accent="teal" data-accent="teal" title="Teal"></button><button type="button" data-inema-set-accent="rose" data-accent="rose" title="Rose"></button>
+              </div></div>
+            </div>
+          </div>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Alternar claro/escuro" aria-label="Alternar claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Início</a><span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a><span>/</span>
+      <span class="text-purple-400">Módulo 3.4</span>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.4</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧭 Boas práticas e armadilhas</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">O último módulo do curso reúne os <strong class="text-neutral-100">guardrails</strong> do método: o que nunca pular, o que nunca inflar, como ser honesto sobre o que o painel é — e um checklist final para decidir se um briefing está pronto para você confiar e compartilhar.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~35</div><div class="text-xs text-neutral-400">Minutos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Avançado</div><div class="text-xs text-neutral-400">Nível</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Prático</div><div class="text-xs text-neutral-400">Tipo</div></div>
+      </div>
+      <div class="mt-6 max-w-md"><div data-inema-meter="modulo:3-4" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 3.4">
+        <div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Progresso do módulo</strong><span class="inema-meter-pct text-purple-400 font-bold">0%</span></div>
+        <div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 de 6 tópicos lidos</span>
+      </div></div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+    <!-- TOC -->
+    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
+      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+      <ul class="space-y-1 text-sm">
+        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">1. Nunca pular a Fase 4</a></li>
+        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">2. Não inflar o painel</a></li>
+        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">3. Pesquisa real apenas</a></li>
+        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">4. O painel é autoral</a></li>
+        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">5. Custo e rate limits</a></li>
+        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">6. Checklist final</a></li>
+      </ul>
+    </nav>
+
+    <main id="conteudo" class="inema-prose min-w-0">
+
+      <!-- TÓPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-3-4#topico-1" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">✅ Nunca pular a Fase 4</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-4-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">É a regra número um do método: <strong class="text-purple-400">um relatório entregue sem a Fase 4 não é um relatório STORM</strong>. A revisão adversarial e a verificação de cada citação contra a fonte primária são o que separam o briefing de um "despejo" bem formatado. Pular a Fase 4 transforma o relatório em opinião com aparência de pesquisa.</p>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed">Quando você confia em um achado, está confiando porque ele foi <em>checado</em> — não porque a frase soou convincente. O fluxograma abaixo é a decisão que você deve repetir para cada achado antes de aceitá-lo.</p>
+
+        <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+          <svg viewBox="0 0 1000 330" class="w-full h-auto" role="img" aria-label="Fluxo de decisão: para cada achado, pergunte se pode confiar; se a Fase 4 foi feita e a fonte primária confere, use e compartilhe; se for preprint, pesquisa única ou não verificado, rebaixe ou ressalve">
+            <defs>
+              <linearGradient id="m34-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/></linearGradient>
+              <filter id="m34-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <pattern id="m34-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#a855f7" opacity="0.1"/></pattern>
+              <marker id="m34-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#9ca3af"/></marker>
+              <marker id="m34-ahg" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"/></marker>
+              <marker id="m34-ahr" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#f87171"/></marker>
+            </defs>
+            <rect x="0" y="0" width="1000" height="330" fill="url(#m34-grid)"/>
+            <!-- entrada -->
+            <rect x="30" y="140" width="150" height="50" rx="12" fill="#1a1230" stroke="#9ca3af" stroke-width="2"/>
+            <text x="105" y="170" text-anchor="middle" fill="#e5e7eb" font-family="Inter,sans-serif" font-size="13">achado do relatório</text>
+            <path d="M180,165 L228,165" fill="none" stroke="#9ca3af" stroke-width="2" marker-end="url(#m34-ah)"/>
+            <!-- diamante de decisão -->
+            <g filter="url(#m34-glow)"><polygon points="350,95 470,165 350,235 230,165" fill="#1a1230" stroke="url(#m34-grad)" stroke-width="2.5"/></g>
+            <text x="350" y="155" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="13">Posso confiar</text>
+            <text x="350" y="175" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="13">neste achado?</text>
+            <!-- ramo SIM -->
+            <path d="M400,125 C470,95 500,80 545,80" fill="none" stroke="#c084fc" stroke-width="2" marker-end="url(#m34-ahg)"/>
+            <text x="455" y="92" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="13">SIM</text>
+            <rect x="548" y="55" width="220" height="50" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.8"/>
+            <text x="658" y="78" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="12">Fase 4 feita +</text>
+            <text x="658" y="95" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="12">fonte primária confere</text>
+            <path d="M768,80 L820,80" fill="none" stroke="#c084fc" stroke-width="2" marker-end="url(#m34-ahg)"/>
+            <g filter="url(#m34-glow)"><rect x="822" y="55" width="150" height="50" rx="10" fill="#0e2018" stroke="url(#m34-grad)" stroke-width="2.5"/></g>
+            <text x="897" y="85" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="13">✓ use e compartilhe</text>
+            <!-- ramo NÃO -->
+            <path d="M400,205 C470,235 500,250 545,250" fill="none" stroke="#f87171" stroke-width="2" marker-end="url(#m34-ahr)"/>
+            <text x="455" y="262" text-anchor="middle" fill="#f87171" font-family="Inter,sans-serif" font-weight="700" font-size="13">NÃO</text>
+            <rect x="548" y="225" width="220" height="50" rx="10" fill="#2a1414" stroke="#f87171" stroke-width="1.8"/>
+            <text x="658" y="248" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="12">preprint / pesquisa única</text>
+            <text x="658" y="265" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="12">/ não verificado</text>
+            <path d="M768,250 L820,250" fill="none" stroke="#f87171" stroke-width="2" marker-end="url(#m34-ahr)"/>
+            <rect x="822" y="225" width="150" height="50" rx="10" fill="#2a1414" stroke="#f87171" stroke-width="2"/>
+            <text x="897" y="255" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-weight="600" font-size="13">✗ rebaixe / ressalve</text>
+          </svg>
+        </div>
+        <p class="text-xs text-neutral-500 mb-6">O diamante roxo é a pergunta que você faz a cada achado. O ramo ciano (SIM) só é válido quando a Fase 4 rodou e a fonte primária confere; o ramo vermelho (NÃO) nunca vira conclusão dura — ele vai para a barra de sinal contestado.</p>
+
+        <div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+          <div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">banner de verificação (deve ser verdadeiro)</span><span class="text-xs text-neutral-500">exemplo</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-purple-400">12/12 checadas</span> · 1 fabricada · 3 corrigidas · 2 rebaixadas</pre>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ Com a Fase 4</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Cada citação confere com a fonte primária</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>O banner declara o placar real, sem maquiagem</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Notas de confiança refletem a evidência checada</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Pulando a Fase 4</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Números soam certos mas ninguém checou</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Citação inventada passa como verdade</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Vira opinião com aparência de pesquisa</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-3-4#topico-2" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">🎚️ Não inflar o painel</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-4-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">A tentação é achar que "mais agentes = pesquisa melhor". É o erro contrário do que o método ensina. O limite é deliberado: <strong class="text-purple-400">no máximo cinco lentes</strong> e <strong class="text-purple-400">um verificador por cluster de citações</strong>. Passar disso não melhora a cobertura — só queima orçamento e adiciona ruído redundante.</p>
+
+        <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center"><span class="mr-2">📐</span> Por que o teto é cinco lentes</h3>
+          <p class="text-neutral-300 mb-3 text-sm">Cada lente nova só vale se trouxer um ângulo que as outras não cobrem. As cinco do STORM (prático, acadêmico, cético, economista, historiador) já cobrem prioridades distintas. Uma sexta lente genérica tende a repetir o que as cinco já disseram.</p>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Lentes idênticas encontram a mesma coisa várias vezes.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Mais de 1 verificador por cluster duplica trabalho sem ganho de rigor.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Se precisar de outro ângulo, troque uma lente — não some uma sexta (você aprendeu isso no 3.3).</span></li>
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ Painel enxuto</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>5 lentes com prioridades distintas</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>1 verificador por cluster de citações</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Troca de lente quando precisa de outro ângulo</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Painel inflado</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>10 lentes "para garantir"</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>3 verificadores conferindo a mesma citação</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Custo e tempo sobem, qualidade não</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-3-4#topico-3" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🔬 Pesquisa real apenas</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-4-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">Toda lente e toda citação precisa apontar para uma <strong class="text-purple-400">fonte real, consultada de verdade</strong>. Nada de estudos, números ou URLs inventados. A regra de ouro: se um número não puder ser verificado, você <strong class="text-neutral-100">rebaixa ou corta</strong> — nunca disfarça como se estivesse confirmado.</p>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Novo aqui? — "disfarçar"</h3>
+          <p class="text-neutral-300 text-sm"><strong>Disfarçar</strong> é apresentar um número não verificado com a mesma confiança de um confirmado — ex.: escrever "o mercado vale US$ 40 bi" sem fonte primária, como se fosse fato. O honesto é marcar como <code class="font-mono">NÃO VERIFICADO</code>, mover para a barra de sinal contestado, ou remover. O leitor precisa saber em que pode pisar.</p>
+        </div>
+
+        <div class="space-y-4 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Verifica? Mantém com a nota que a evidência sustenta.</h4><p class="text-neutral-300 text-sm">Fonte primária confere → fica no corpo do relatório com a tag <code class="font-mono text-purple-400">CONFIRMADO</code>.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Verifica em parte? Reescreve honesto e rebaixa.</h4><p class="text-neutral-300 text-sm">Pesquisa única ou comissionada → reatribui a fonte e baixa a nota; tag <code class="font-mono text-purple-400">REBAIXADO</code>.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Não verifica? Corta ou move para contestado.</h4><p class="text-neutral-300 text-sm">Sem fonte primária real → fora do corpo. Tag <code class="font-mono text-purple-400">NÃO VERIFICADO</code> ou <code class="font-mono text-purple-400">FALSO</code>, e conta no banner.</p></div>
+          </div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-3-4#topico-4" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">🪞 Revelar que o painel é autoral</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-4-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">As cinco lentes parecem cinco especialistas independentes, mas foram escritas pelo <strong class="text-neutral-100">mesmo autor</strong> (o mesmo modelo, com o mesmo enquadramento). Por isso o relatório <strong class="text-purple-400">sempre revela isso</strong>: quando as cinco lentes concordam, é uma hipótese forte — não uma prova independente do campo.</p>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center"><span class="mr-2">⚖️</span> Convergência ≠ consenso do campo</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li><strong>Convergência autoral:</strong> as 5 lentes concordam → bom sinal, mas todas partiram do mesmo frame.</li>
+            <li><strong>Consenso do campo:</strong> pesquisadores independentes, com dados próprios, chegam à mesma conclusão.</li>
+            <li><strong>Consequência prática:</strong> apresente concordância como "hipótese robusta a checar", nunca como "está provado".</li>
+          </ul>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Deixe uma frase visível no relatório: <em>"Este painel foi construído por um único autor; concordância entre lentes é hipótese forte, não consenso independente."</em> Pequena, mas é o que mantém o briefing honesto.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-3-4#topico-5" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">💸 Custo e rate limits</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-4-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">Uma execução cria <strong class="text-purple-400">~9 a 11 agentes</strong>. Isso é esperado e, o melhor, é <strong class="text-neutral-100">previsível</strong>: ao contrário do deep research que dispara dezenas de agentes idênticos, o STORM tem um número fixo por desenho. Saber a conta ajuda a gerenciar suas execuções e não esbarrar em rate limit no meio.</p>
+
+        <div class="space-y-4 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">5</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Fase 1 — cinco lentes em paralelo</h4><p class="text-neutral-300 text-sm">5 agentes <code class="font-mono">general-purpose</code> numa única mensagem. Esse número é fixo.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">+4–6</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Fase 4b — verificadores, 1 por cluster</h4><p class="text-neutral-300 text-sm">~4 a 6 agentes, cada um conferindo um cluster de citações contra a fonte primária.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">=</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Total: ~9 a 11 agentes por execução</h4><p class="text-neutral-300 text-sm">Previsível por desenho. O custo não explode de forma surpreendente como num enxame de agentes genéricos.</p></div>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🧯</span> Gerenciar rate limits</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li><strong>Espace as execuções:</strong> rodar vários STORMs em sequência num curto intervalo é o que costuma estourar o limite.</li>
+            <li><strong>Modelo por subagente:</strong> rodar lentes mais baratas (Haiku/Sonnet) reduz custo — você viu isso no 3.3.</li>
+            <li><strong>Não infle:</strong> o teto de 5 lentes / 1 verificador por cluster também é o teto do seu custo.</li>
+          </ul>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-3-4#topico-6" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">📋 Checklist final antes de confiar</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-4-t6-p1" class="text-neutral-300 mb-6 leading-relaxed">Antes de tomar uma decisão ou compartilhar um briefing, passe por este checklist. Se tudo do lado verde estiver marcado e nada do lado vermelho aparecer, você pode confiar. É a versão prática do diamante do Tópico 1, aplicada ao relatório inteiro.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ Pronto para confiar</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Fase 4 rodou e o banner é verdadeiro</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Cada citação tem tag de status real</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Preprints e pesquisa única estão rebaixados</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>O relatório revela que o painel é autoral</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Você conferiu pessoalmente os números que mais importam</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Pare e reveja</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Algum número sem fonte primária no corpo</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Banner em branco ou que não bate com as tags</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Convergência apresentada como consenso provado</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Painel inflado além de 5 lentes</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- CHECAGEM LEVE -->
+        <div data-inema-check="modulo-3-4#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="font-medium mb-4">Fechando o curso: um achado vem de um preprint não revisado por pares e a Fase 4 não conseguiu confirmar o número. O que o método manda fazer?</p>
+          <div class="inema-check-options space-y-2">
+            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Manter no corpo com nota alta — soou convincente.</button>
+            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Rebaixar e mover para a barra de sinal contestado, contando no banner.</button>
+            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Adicionar mais 5 lentes para "compensar" a incerteza.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-12">
+        <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">🎉</span> Você chegou ao fim do curso</h2>
+          <p class="text-neutral-300 mb-6">Da teoria do prompt único até os guardrails do método, você agora sabe rodar, ler, customizar e <strong class="text-neutral-100">confiar com critério</strong> em um briefing STORM. Estes são os princípios que sustentam tudo:</p>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">A Fase 4 é inegociável</strong><span class="text-neutral-400"> — sem verificação e banner verdadeiro, não é STORM.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Enxuto vence inflado</strong><span class="text-neutral-400"> — 5 lentes, 1 verificador por cluster; mais agentes ≠ melhor.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Só pesquisa real</strong><span class="text-neutral-400"> — o que não verifica, você rebaixa ou corta; nunca disfarça.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Honestidade sobre o painel</strong><span class="text-neutral-400"> — convergência autoral é hipótese forte, não consenso do campo.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-purple-400 mb-2">Parabéns:</h3><p class="text-neutral-300">Você concluiu o curso STORM Research 🎉 — agora é só rodar nos seus próprios temas.</p></div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para Trilha</a>
+            <a href="../../index.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">Concluir o curso →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="border-t border-dark-600 py-8 mt-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · Curso INEMA · 2026 · <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a></p></div>
+  </footer>
+
+  <script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-4#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não: um preprint não confirmado não pode entrar no corpo com nota alta — isso é disfarçar incerteza como certeza.',
+            1: 'Exato: rebaixe, mova para a barra de sinal contestado e conte no banner. É a regra de "pesquisa real apenas" aplicada.',
+            2: 'Mais lentes não verificam nada — inflar o painel não resolve evidência fraca. O caminho é rebaixar com honestidade.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

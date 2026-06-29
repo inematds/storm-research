@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="storm-research">
+  <meta name="description" content="Módulo 3.3 — Customizar e estender o STORM: adicionar uma 6ª lente no molde exato dos prompts, mirar no leitor, editar o template com segurança, escolher modelo por subagente e levar os princípios a outros fluxos.">
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+  <title>Módulo 3.3 · Customizar e estender | STORM Research</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-purple-400 focus:rounded-lg">Pular para o conteudo</a>
+
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Pratica</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Avancado</span>
+          </a>
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm">
+            <span aria-hidden="true">◷</span><span>Minha jornada</span>
+            <span class="inema-journey-badge" data-inema-journey-badge data-count="0" aria-hidden="true"></span>
+          </button>
+          <div class="relative">
+            <button type="button" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" aria-expanded="false" aria-haspopup="true" title="Aparencia e leitura">
+              <span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Aparencia</span>
+            </button>
+            <div id="appearance-pop" data-inema-appearance class="inema-appearance-pop" data-open="false" style="right:0;">
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Tema</span><div class="inema-segment">
+                <button type="button" data-inema-set-theme="inema-dark">Escuro</button><button type="button" data-inema-set-theme="claro">Claro</button><button type="button" data-inema-set-theme="sepia">Sepia</button><button type="button" data-inema-set-theme="contraste">Alto contraste</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Fonte</span><div class="inema-segment">
+                <button type="button" data-inema-set-font="inter">Inter</button><button type="button" data-inema-set-font="system">Sistema</button><button type="button" data-inema-set-font="leitura">Leitura</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Tamanho</span><div class="inema-segment">
+                <button type="button" data-inema-set-fontscale="100">A</button><button type="button" data-inema-set-fontscale="112">A+</button><button type="button" data-inema-set-fontscale="125">A++</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Entrelinha</span><div class="inema-segment">
+                <button type="button" data-inema-set-leading="1.45">Compacto</button><button type="button" data-inema-set-leading="1.7">Confortavel</button>
+              </div></div>
+              <div class="inema-pref-group"><span class="inema-pref-group__label">Acento</span><div class="inema-accent-grid">
+                <button type="button" data-inema-set-accent="emerald" data-accent="emerald" title="Esmeralda"></button><button type="button" data-inema-set-accent="blue" data-accent="blue" title="Azul"></button><button type="button" data-inema-set-accent="purple" data-accent="purple" title="Roxo"></button><button type="button" data-inema-set-accent="amber" data-accent="amber" title="Ambar"></button><button type="button" data-inema-set-accent="teal" data-accent="teal" title="Teal"></button><button type="button" data-inema-set-accent="rose" data-accent="rose" title="Rose"></button>
+              </div></div>
+            </div>
+          </div>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Alternar claro/escuro" aria-label="Alternar claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Início</a><span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a><span>/</span>
+      <span class="text-purple-400">Módulo 3.3</span>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.3</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧩 Customizar e estender</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">A skill é só um arquivo de texto — então ela é sua para mexer. Aqui você adiciona uma 6ª lente no molde exato dos prompts originais, direciona todo relatório ao seu papel, edita o template com segurança, escolhe modelo por subagente e leva os dois princípios do STORM para outros fluxos.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~45</div><div class="text-xs text-neutral-400">Minutos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Avançado</div><div class="text-xs text-neutral-400">Nível</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Prático</div><div class="text-xs text-neutral-400">Tipo</div></div>
+      </div>
+      <div class="mt-6 max-w-md"><div data-inema-meter="modulo:3-3" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 3.3">
+        <div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Progresso do módulo</strong><span class="inema-meter-pct text-purple-400 font-bold">0%</span></div>
+        <div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 de 6 tópicos lidos</span>
+      </div></div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+    <!-- TOC -->
+    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
+      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+      <ul class="space-y-1 text-sm">
+        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">1. Adicionar uma 6ª lente</a></li>
+        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">2. Mirar no leitor</a></li>
+        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">3. Editar o template</a></li>
+        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">4. Modelo por subagente</a></li>
+        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">5. Usar com Codex/outros</a></li>
+        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors">6. Princípios STORM adiante</a></li>
+      </ul>
+    </nav>
+
+    <main id="conteudo" class="inema-prose min-w-0">
+
+      <!-- TÓPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-3-3#topico-1" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">➕ Adicionar uma 6ª lente</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-3-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">As cinco lentes são um <strong class="text-neutral-100">padrão sólido, não uma lei</strong>. A Fase 1 do <code class="font-mono text-purple-400">SKILL.md</code> tem cinco prompts exatos; adicionar uma sexta é copiar esse molde e trocar o papel. O próprio método já nomeia "a 6ª lente ausente" como o ponto cego do relatório — aqui você a transforma em uma lente de verdade, que pesquisa e responde como as outras.</p>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed">A imagem trata isso como uma equação: as cinco lentes padrão, mais uma nova que segue o mesmo contrato, somam um relatório com um buraco a menos.</p>
+
+        <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+          <svg viewBox="0 0 1000 300" class="w-full h-auto" role="img" aria-label="Equação visual: as cinco lentes padrão mais uma sexta lente que você adiciona somam um relatório com menos pontos cegos">
+            <defs>
+              <linearGradient id="m33-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/></linearGradient>
+              <filter id="m33-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <pattern id="m33-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#a855f7" opacity="0.1"/></pattern>
+            </defs>
+            <rect x="0" y="0" width="1000" height="300" fill="url(#m33-grid)"/>
+            <text x="500" y="28" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="15">A equação da 6ª lente</text>
+            <!-- A: as 5 lentes padrão -->
+            <text x="160" y="68" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">as 5 lentes padrão</text>
+            <rect x="40" y="80" width="240" height="160" rx="14" fill="#1a1230" stroke="url(#m33-grad)" stroke-width="2"/>
+            <g font-family="Inter,sans-serif" font-size="11">
+              <rect x="58" y="94"  width="204" height="20" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.4"/><text x="160" y="108" text-anchor="middle" fill="#bfe6ff">prático</text>
+              <rect x="58" y="120" width="204" height="20" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.4"/><text x="160" y="134" text-anchor="middle" fill="#bfe6ff">acadêmico</text>
+              <rect x="58" y="146" width="204" height="20" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.4"/><text x="160" y="160" text-anchor="middle" fill="#bfe6ff">cético</text>
+              <rect x="58" y="172" width="204" height="20" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.4"/><text x="160" y="186" text-anchor="middle" fill="#bfe6ff">economista</text>
+              <rect x="58" y="198" width="204" height="20" rx="6" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.4"/><text x="160" y="212" text-anchor="middle" fill="#bfe6ff">historiador</text>
+            </g>
+            <!-- + -->
+            <text x="305" y="172" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="42">+</text>
+            <!-- B: a 6ª lente nova, destacada -->
+            <text x="435" y="68" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="12">você adiciona</text>
+            <g filter="url(#m33-glow)"><rect x="330" y="118" width="210" height="84" rx="14" fill="#1a1230" stroke="url(#m33-grad)" stroke-width="2.6"/></g>
+            <text x="435" y="152" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="16">6ª lente</text>
+            <text x="435" y="176" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="12">mesmo molde, novo ângulo</text>
+            <!-- = -->
+            <text x="572" y="172" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="42">=</text>
+            <!-- C: relatório mais completo -->
+            <text x="780" y="68" text-anchor="middle" fill="#9ca3af" font-family="Inter,sans-serif" font-size="12">resultado</text>
+            <g filter="url(#m33-glow)"><rect x="600" y="80" width="360" height="160" rx="16" fill="#1a1230" stroke="url(#m33-grad)" stroke-width="2.6"/></g>
+            <text x="780" y="150" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="700" font-size="18">relatório</text>
+            <text x="780" y="180" text-anchor="middle" fill="#e9d5ff" font-family="Inter,sans-serif" font-size="13">com menos pontos cegos</text>
+          </svg>
+        </div>
+        <p class="text-xs text-neutral-500 mb-6">Cada lente é um ângulo. A 6ª lente que você adiciona segue o MESMO contrato das outras (as três saídas obrigatórias) — por isso o mapa de contradições e a síntese conseguem encaixá-la sem quebrar. Mais um ângulo deliberado = um buraco a menos.</p>
+
+        <div class="bg-purple-500/10 rounded-xl border border-purple-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center"><span class="mr-2">🧷</span> O contrato que você NÃO pode quebrar</h3>
+          <p class="text-neutral-300 text-sm mb-3">Toda lente do STORM devolve exatamente três coisas. A Fase 2 (mapa de contradições) e a Fase 3 (síntese) leem essas três peças. Se sua lente nova não tiver as três no mesmo formato, a síntese não consegue cruzá-la com as outras.</p>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">1.</span><span><strong>POSIÇÃO CENTRAL</strong> em 2 frases.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">2.</span><span><strong>EVIDÊNCIA MAIS FORTE</strong>: 3 a 5 bullets, cada um com dado/caso/fonte nomeada + URL.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">3.</span><span><strong>A ÚNICA COISA</strong> que só essa lente diria.</span></li>
+          </ul>
+        </div>
+
+        <!-- COPY-RUN -->
+        <div class="bg-dark-800 rounded-xl border border-purple-500/30 overflow-hidden mb-6">
+          <div class="px-6 pt-5 pb-3 border-b border-dark-600">
+            <span class="inline-block px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[11px] font-bold rounded mb-2">COPIAR · COLAR · RODAR</span>
+            <h3 class="text-lg font-semibold">Patch: adicionar a lente "O INICIANTE EM IA"</h3>
+            <p class="text-neutral-400 text-sm mt-1"><strong class="text-neutral-300">Objetivo:</strong> colar uma 6ª seção na Fase 1 do <code class="font-mono">SKILL.md</code>, no molde exato das lentes existentes — e disparar 6 subagentes em vez de 5.</p>
+          </div>
+          <div class="bg-dark-900 px-6 py-5">
+            <div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">SKILL.md → Fase 1 → cole depois da lente 5 (O HISTORIADOR)</span><span class="text-xs text-neutral-500">bloco copiável</span></div>
+            <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed whitespace-pre-wrap"><span class="text-purple-400">### 6. O INICIANTE EM IA</span>
+
+Você é O INICIANTE EM IA para: {TOPIC} ({TOPIC_FRAME}). Você é <span class="text-purple-400">&lt;quem o relatório precisa proteger — ex.: alguém que nunca implementou isso e vai decidir só com base neste briefing&gt;</span>. Faça pesquisa real na web priorizando guias de primeiros passos, relatos de quem começou agora, perguntas frequentes e os erros mais comuns de iniciantes.
+
+Mostre o que um iniciante PRECISA saber antes de agir e onde ele tropeça: o atrito de entrada, os pré-requisitos escondidos e as expectativas irreais que o hype cria.
+
+Retorne EXATAMENTE:
+
+1. POSIÇÃO CENTRAL em 2 frases.
+2. EVIDÊNCIA MAIS FORTE, com 3 a 5 bullets, cada um com um guia/relato/dado concreto + fonte nomeada + URL.
+3. A ÚNICA COISA que apenas um iniciante diria.
+
+Cite fontes reais com URLs. Menos de 400 palavras.</pre>
+          </div>
+          <div class="px-6 py-4 bg-purple-900/10 border-t border-dark-600">
+            <p class="text-sm text-neutral-300"><strong class="text-purple-400">Como verificar:</strong> rode a skill no seu tópico de sempre. No chat devem aparecer <strong class="text-neutral-100">6 subagentes</strong> rodando em paralelo (não 5). No relatório final, pelo menos um achado deve vir claramente dessa lente (o ângulo do iniciante). Se a síntese ignorar a 6ª lente, é sinal de que o contrato das três saídas foi quebrado — confira se as palavras <code class="font-mono">POSIÇÃO CENTRAL</code>, <code class="font-mono">EVIDÊNCIA MAIS FORTE</code> e <code class="font-mono">A ÚNICA COISA</code> estão escritas igual às outras lentes.</p>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Atenção ao custo (o guardrail padrão é 5)</h3>
+          <p class="text-neutral-300 text-sm">O método recomenda <strong>não passar de cinco lentes</strong> por padrão — cada lente extra é ~1 agente a mais (e mais um verificador na Fase 4). Adicionar a 6ª é uma <em>escolha consciente</em>: faça quando há um ângulo realmente ausente (o iniciante, o criador de conteúdo, o regulador). Trocar "O INICIANTE EM IA" por "O CRIADOR DE CONTEÚDO" é só mudar o papel e a frase de pesquisa — o resto do molde fica igual.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-3-3#topico-2" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">🎯 Mirar no leitor (tailored)</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-3-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">A Fase 0 identifica o <strong class="text-neutral-100">papel do leitor</strong> para direcionar o insight acionável e o guia de segurança das afirmações. Em vez de informar isso toda vez, você pode <strong class="text-purple-400">pré-carregar o contexto do seu negócio</strong> — e todo relatório já sai mirado em você.</p>
+
+        <div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+          <div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">contexto que você dá uma vez (ex.: CLAUDE.md do projeto)</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed whitespace-pre-wrap">Sou <span class="text-purple-400">&lt;seu papel — ex.: head de produto de uma fintech&gt;</span>.
+Meu negócio: <span class="text-purple-400">&lt;o que você faz e para quem&gt;</span>.
+Em todo Storm Research, o leitor-alvo sou eu nesse papel,
+salvo se eu disser o contrário.</pre>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Sem contexto (genérico)</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Insight acionável fala com "um profissional da área" abstrato</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Você precisa traduzir as recomendações para o seu caso</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>O mesmo relatório serviria para qualquer um</span></li>
+            </ul>
+          </div>
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ Com contexto (direcionado)</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>3 a 6 movimentos específicos para o SEU papel</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>O guia de segurança fala da sua exposição real</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Menos retrabalho: já chega aplicável</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Contexto direciona <strong>o insight e o guia de segurança</strong> — não enviesa a pesquisa das lentes. Cada lente continua fazendo busca real e o cético continua atacando a sua premissa. Você muda para QUEM o relatório fala, não O QUE ele considera verdade.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-3-3#topico-3" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🎨 Editar o report-template</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-3-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">O <code class="font-mono text-purple-400">report-template.html</code> é o molde do briefing. A Fase 3 manda <strong class="text-neutral-100">cloná-lo, não recriar o CSS</strong>. Customizar com segurança é mexer no <em>conteúdo</em> e nos <em>rótulos</em> — sem rasgar o estilo visual, que o método pede para manter idêntico.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ Mexa à vontade</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Renomear/traduzir rótulos das seções</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Acrescentar uma seção nova (ex.: "Próximos passos no meu time")</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Trocar o logotipo/cabeçalho pelo da sua marca</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Ajustar os textos de ajuda dos chips</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Não faça</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Apagar/reescrever o CSS do template</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Trocar por outro estilo visual inteiro</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Remover o banner de verificação ou as tags de status</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Tirar a seção de referências</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+          <div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">edição segura: muda só o rótulo, mantém a estrutura/CSS</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-neutral-500">&lt;!-- antes --&gt;</span>
+&lt;h2 class="section-title"&gt;Insight acionável&lt;/h2&gt;
+
+<span class="text-neutral-500">&lt;!-- depois (rótulo seu, classe intacta) --&gt;</span>
+&lt;h2 class="section-title"&gt;O que <span class="text-purple-400">&lt;meu time&gt;</span> faz na segunda-feira&lt;/h2&gt;</pre>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Por que manter o CSS</h3>
+          <p class="text-neutral-300 text-sm">O design (limpo, profissional, Montserrat / Roboto Mono, destaque azul) faz o briefing parecer confiável e ser legível em qualquer máquina, sem build. Se você troca o estilo inteiro, perde a consistência entre relatórios e arrisca quebrar o layout. Regra de bolso: <strong>edite o que se lê, preserve o que se vê</strong>.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-3-3#topico-4" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">🧠 Modelo por subagente</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-3-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">Cada lente é um agente <code class="font-mono text-purple-400">general-purpose</code> independente. Você pode rodar <strong class="text-neutral-100">lentes diferentes em modelos diferentes</strong> (Opus, Sonnet, Haiku) e equilibrar custo e qualidade: raciocínio pesado onde dói, modelo leve onde a tarefa é direta.</p>
+
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">⬆</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Modelo mais forte nas lentes que raciocinam</h4><p class="text-neutral-300 text-sm">O <strong>cético</strong> (constrói o melhor contra-argumento) e o <strong>acadêmico</strong> (pesa evidência e tamanho de efeito) ganham com um modelo de raciocínio mais robusto.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">⬇</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Modelo leve nas lentes mais diretas</h4><p class="text-neutral-300 text-sm">Coleta factual de paralelos e números (historiador, parte do prático) costuma ir bem com um modelo mais barato — você corta custo sem perder a cobertura.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">⚖</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">A verificação (Fase 4) merece cuidado</h4><p class="text-neutral-300 text-sm">É a etapa que dá honestidade ao relatório. Se for economizar, economize nas lentes — não nos verificadores que conferem fontes primárias.</p></div>
+          </div>
+        </div>
+
+        <div class="bg-purple-500/10 rounded-xl border border-purple-500/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-purple-400 mb-2 flex items-center"><span class="mr-2">🎚️</span> É uma alavanca avançada</h3>
+          <p class="text-neutral-300 text-sm">O padrão (mesmo modelo para todos) funciona muito bem. Mexa em modelo por subagente só quando custo ou limite de uso virar um problema real — e meça antes de assumir que o modelo mais barato baixou a qualidade.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-3-3#topico-5" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🔀 Usar com Codex e outros agentes</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-3-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">A skill é <strong class="text-purple-400">autocontida e portátil</strong>: só depende de ferramentas nativas (agente, escrita, busca/fetch na web) e do template na mesma pasta. Por isso ela viaja para outros agentes — muda só <strong class="text-neutral-100">onde a pasta mora</strong>.</p>
+
+        <div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+          <div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">a mesma pasta, em agentes diferentes</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">.claude/skills/storm-research/   <span class="text-neutral-500"># Claude Code</span>
+.codex/skills/storm-research/    <span class="text-neutral-500"># Codex</span>
+.agents/skills/storm-research/   <span class="text-neutral-500"># outros agentes</span>
+   ├── SKILL.md
+   └── report-template.html</pre>
+        </div>
+
+        <div class="bg-purple-500/10 rounded-xl border border-purple-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center"><span class="mr-2">🧳</span> Por que ela é portátil</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Sem scripts externos, APIs ou serviços pagos — só texto + ferramentas nativas.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Os dois arquivos andam juntos: <code class="font-mono">SKILL.md</code> + <code class="font-mono">report-template.html</code>.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>A mesma ideia das 4 fases roda — desde que o agente saiba disparar subagentes em paralelo e buscar na web.</span></li>
+          </ul>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> O que pode variar entre agentes</h3>
+          <p class="text-neutral-300 text-sm">O nome exato da ferramenta de subagente e de busca pode mudar de um agente para outro. Se outro agente não tiver paralelismo de subagentes ou acesso à web, a essência continua — você só perde a vantagem de rodar as cinco lentes ao mesmo tempo.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-3-3#topico-6" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">🌐 Levar os princípios STORM adiante</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m3-3-t6-p1" class="text-neutral-300 mb-6 leading-relaxed">Tire o HTML e o pipeline da frente e sobram <strong class="text-neutral-100">dois princípios transferíveis</strong>: (1) múltiplas perspectivas deliberadas em vez de uma só, e (2) verificação adversarial antes de confiar. Eles servem para muito mais do que pesquisa.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">🏛️ Conselho de decisão</div><p class="text-xs text-neutral-400">Vários papéis opinam sobre uma escolha; a contradição vira insumo, não ruído.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">🔥 Roast do seu plano</div><p class="text-xs text-neutral-400">Um agente cético ataca de propósito a sua proposta antes de você apostar nela.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">🔎 Code review multi-lente</div><p class="text-xs text-neutral-400">Segurança, performance e legibilidade como lentes separadas no mesmo diff.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">✅ Fato-checagem de qualquer texto</div><p class="text-xs text-neutral-400">A Fase 4 sozinha: cada afirmação contra a fonte primária, com veredito.</p></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ O que transferir</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Papéis deliberados que discordam de propósito</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Mapear contradição em vez de escondê-la</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Verificar antes de afirmar; revelar o que é hipótese</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ O que não vale copiar cegamente</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Empilhar agentes idênticos achando que cobre mais</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Apresentar convergência de um painel autoral como consenso</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Pular a verificação porque "parece certo"</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- CHECAGEM LEVE -->
+        <div data-inema-check="modulo-3-3#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="font-medium mb-4">Auto-recuperação (opcional): ao adicionar uma 6ª lente, o que ela DEVE manter para a síntese continuar funcionando?</p>
+          <div class="inema-check-options space-y-2">
+            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Um nome chamativo e um emoji próprio</button>
+            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">As 3 saídas obrigatórias: POSIÇÃO CENTRAL, EVIDÊNCIA MAIS FORTE e A ÚNICA COISA</button>
+            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Rodar num modelo diferente das outras lentes</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido ✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-12">
+        <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Adicionar uma lente = copiar o molde</strong><span class="text-neutral-400"> — mesmo papel + as 3 saídas obrigatórias, ou a síntese não a encaixa.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Contexto mira no leitor</strong><span class="text-neutral-400"> — direciona o insight, sem enviesar a pesquisa das lentes.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Edite o conteúdo, preserve o CSS</strong><span class="text-neutral-400"> — rótulos e seções sim; estilo visual inteiro não.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Portátil e transferível</strong><span class="text-neutral-400"> — roda em Codex/outros, e os princípios servem a outros fluxos.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-purple-400 mb-2">Próximo módulo:</h3><p class="text-neutral-300">3.4 — Boas práticas e armadilhas</p></div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para Trilha</a>
+            <a href="modulo-3-4.html" class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors">Próximo Módulo →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="border-t border-dark-600 py-8 mt-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · Curso INEMA · 2026 · <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a></p></div>
+  </footer>
+
+  <script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'Nome e emoji ajudam a leitura, mas não são o que faz a síntese funcionar. O que importa é o formato das saídas.',
+            1: 'Exato: sem as três saídas no mesmo formato das outras lentes, o mapa de contradições e a síntese não conseguem cruzar a lente nova.',
+            2: 'Modelo por subagente é uma escolha de custo/qualidade — não é requisito para a lente entrar na síntese.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
