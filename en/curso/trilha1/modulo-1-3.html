@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="storm-research" name="inema-course"/>
+<meta content="Module 1.3 — Subagents, contradictions, and verification: why agents don’t talk to each other, why convergence isn’t consensus, and what Phase 4 protects." name="description"/>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<title>Module 1.3 · Subagents, contradictions, and verification | STORM Research</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5,150,105,0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5,150,105,0.18); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+<link href="https://inematds.github.io/storm-research/curso/trilha1/modulo-1-3.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/storm-research/en/curso/trilha1/modulo-1-3.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/storm-research/es/curso/trilha1/modulo-1-3.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha1/modulo-1-3.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="modulo-1-3.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">EN</a><a href="../../../es/curso/trilha1/modulo-1-3.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-emerald-400 focus:rounded-lg" href="#conteudo">Skip to content</a>
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10" href="index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentals</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Practice</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Advanced</span>
+</a>
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>My journey</span>
+<span aria-hidden="true" class="inema-journey-badge" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<div class="relative">
+<button aria-expanded="false" aria-haspopup="true" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" title="Appearance and reading" type="button">
+<span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Appearance</span>
+</button>
+<div class="inema-appearance-pop" data-inema-appearance="" data-open="false" id="appearance-pop" style="right:0;">
+<div class="inema-pref-group"><span class="inema-pref-group__label">Topic</span><div class="inema-segment">
+<button data-inema-set-theme="inema-dark" type="button">Dark</button><button data-inema-set-theme="claro" type="button">Clear</button><button data-inema-set-theme="sepia" type="button">Sepia</button><button data-inema-set-theme="contraste" type="button">High contrast</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Source</span><div class="inema-segment">
+<button data-inema-set-font="inter" type="button">Inter</button><button data-inema-set-font="system" type="button">System</button><button data-inema-set-font="leitura" type="button">Reading</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Size</span><div class="inema-segment">
+<button data-inema-set-fontscale="100" type="button">A</button><button data-inema-set-fontscale="112" type="button">A+</button><button data-inema-set-fontscale="125" type="button">A++</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Line spacing</span><div class="inema-segment">
+<button data-inema-set-leading="1.45" type="button">Compact</button><button data-inema-set-leading="1.7" type="button">Comfortable</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Accent</span><div class="inema-accent-grid">
+<button data-accent="emerald" data-inema-set-accent="emerald" title="Emerald" type="button"></button><button data-accent="blue" data-inema-set-accent="blue" title="Blue" type="button"></button><button data-accent="purple" data-inema-set-accent="purple" title="Purple" type="button"></button><button data-accent="amber" data-inema-set-accent="amber" title="Amber" type="button"></button><button data-accent="teal" data-inema-set-accent="teal" title="Teal" type="button"></button><button data-accent="rose" data-inema-set-accent="rose" title="Rose" type="button"></button>
+</div></div>
+</div>
+</div>
+<button aria-label="Toggle light/dark" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Toggle light/dark">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Navigation track" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-emerald-400" href="../../index.html">Start</a><span>/</span>
+<a class="hover:text-emerald-400" href="index.html">Track 1</a><span>/</span>
+<span class="text-emerald-400">Module 1.3</span>
+</div>
+</nav>
+<header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MODULE 1.3</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🌟 Subagents, contradictions, and verification</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">You already know the five lenses. Now see how they work in practice: agents that <strong class="text-neutral-300">don’t talk to each other</strong>, a map that cross-references contradictions, and a verification phase that prevents any number from entering the report without being checked. This is where the method stops being "asking for five opinions" and becomes engineering.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">6</div><div class="text-xs text-neutral-400">Topics</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">~45</div><div class="text-xs text-neutral-400">Minutes</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Basic</div><div class="text-xs text-neutral-400">Level</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Theory</div><div class="text-xs text-neutral-400">Type</div></div>
+</div>
+<div class="mt-6 max-w-md"><div aria-label="Module 1.3 progress" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:1-3" role="progressbar">
+<div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Module progress</strong><span class="inema-meter-pct text-emerald-400 font-bold">0%</span></div>
+<div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 of 6 topics read</span>
+</div></div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+<!-- TOC -->
+<nav aria-label="Page index" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Section <span class="inema-toc-pos">1</span> of <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-1">1. Subagents vs. agent teams</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-2">2. Convergence ≠ consensus</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-3">3. The Contradiction Map</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-4">4. Universal Agreement and Blind Spot</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-5">5. Reliability = evidence</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-6">6. Verify primary sources</a></li>
+</ul>
+</nav>
+<main class="inema-prose min-w-0" id="conteudo">
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-1-3#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🌟 Subagents vs. agent teams</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question in this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t1-p1">In Module 1.2, you saw the five lenses. What remains is understanding <strong class="text-neutral-100">how</strong> they run. In STORM, the <strong class="text-emerald-400">main session</strong> triggers the five lenses as <strong class="text-emerald-400">subagents</strong> in a single message — and these subagents <strong class="text-neutral-100">don’t talk to one another</strong>. Each researches independently and returns the result only to the main session. That's different from a <em>agent team</em>.</p>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> New here? — three terms</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li><strong>Subagent:</strong> a working copy of Claude that the main session creates for a specific task (e.g., "be the economist and research X"). It does the task, returns text, and disappears. It has no memory of the other tasks.</li>
+<li><strong>Main session:</strong> the conversation where <em>you</em> is there. It dispatches the subagents, receives their results, and assembles the report. The “conductor.”</li>
+<li><strong>Agent team:</strong> an arrangement in which several agents <em>talk to each other</em> — they debate and respond to one another. Richer, but more expensive and less predictable. STORM <strong>no</strong> use this.</li>
+</ul>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed">The image compares the two arrangements. On the left, a <em>agent team</em>: four agents all connected to each other, talking in a mesh. On the right, STORM: the main session launches isolated subagents that respond only to it, and it’s the one that brings everything together into a result.</p>
+<div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+<svg aria-label="On the left, four fully interconnected circles represent an agent team that communicates with one another; on the right, the main session launches five isolated subagents that do not communicate with one another and converge on a single result." class="w-full h-auto" role="img" viewbox="0 0 1000 320">
+<defs>
+<lineargradient id="m13-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#34d399"></stop><stop offset="1" stop-color="#10b981"></stop></lineargradient>
+<filter height="180%" id="m13-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m13-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#10b981" opacity="0.1" r="1.3"></circle></pattern>
+<marker id="m13-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#9ca3af"></path></marker>
+<marker id="m13-ahg" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#34d399"></path></marker>
+</defs>
+<rect fill="url(#m13-grid)" height="320" width="1000" x="0" y="0"></rect>
+<line opacity="0.7" stroke="#4b5563" stroke-dasharray="8 8" stroke-width="1.5" x1="500" x2="500" y1="20" y2="300"></line>
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="250" y="34">Agent team · they talk to each other (more expensive)</text>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="750" y="34">STORM · isolated subagents</text>
+<!-- esquerda: malha de 4 círculos interligados -->
+<g opacity="0.7" stroke="#6b7280" stroke-width="1.8">
+<line x1="160" x2="340" y1="120" y2="120"></line>
+<line x1="160" x2="340" y1="250" y2="250"></line>
+<line x1="160" x2="160" y1="120" y2="250"></line>
+<line x1="340" x2="340" y1="120" y2="250"></line>
+<line x1="160" x2="340" y1="120" y2="250"></line>
+<line x1="340" x2="160" y1="120" y2="250"></line>
+</g>
+<g font-family="Inter,sans-serif" font-size="12">
+<circle cx="160" cy="120" fill="#0e1b26" r="30" stroke="#38bdf8" stroke-width="2"></circle><text fill="#bfe6ff" text-anchor="middle" x="160" y="124">ag 1</text>
+<circle cx="340" cy="120" fill="#0e1b26" r="30" stroke="#38bdf8" stroke-width="2"></circle><text fill="#bfe6ff" text-anchor="middle" x="340" y="124">agent 2</text>
+<circle cx="160" cy="250" fill="#0e1b26" r="30" stroke="#38bdf8" stroke-width="2"></circle><text fill="#bfe6ff" text-anchor="middle" x="160" y="254">agent 3</text>
+<circle cx="340" cy="250" fill="#0e1b26" r="30" stroke="#38bdf8" stroke-width="2"></circle><text fill="#bfe6ff" text-anchor="middle" x="340" y="254">agent 4</text>
+</g>
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="250" y="300">everyone talks to everyone</text>
+<!-- direita: sessão principal -> 5 subagentes isolados -> 1 resultado -->
+<g filter="url(#m13-glow)"><rect fill="#0e2018" height="52" rx="12" stroke="url(#m13-grad)" stroke-width="2.5" width="92" x="520" y="135"></rect></g>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="566" y="158">session</text>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="566" y="174">primary</text>
+<g fill="none" opacity="0.6" stroke="#34d399" stroke-width="1.7">
+<path d="M612,161 C648,161 652,62 692,62" marker-end="url(#m13-ahg)"></path>
+<path d="M612,161 C648,161 652,112 692,112" marker-end="url(#m13-ahg)"></path>
+<path d="M612,161 L692,161" marker-end="url(#m13-ahg)"></path>
+<path d="M612,161 C648,161 652,210 692,210" marker-end="url(#m13-ahg)"></path>
+<path d="M612,161 C648,161 652,260 692,260" marker-end="url(#m13-ahg)"></path>
+</g>
+<g font-family="Inter,sans-serif" font-size="12">
+<rect fill="#0e1b26" height="28" rx="8" stroke="#38bdf8" stroke-width="1.8" width="86" x="692" y="48"></rect><text fill="#bfe6ff" text-anchor="middle" x="735" y="67">lens 1</text>
+<rect fill="#0e1b26" height="28" rx="8" stroke="#38bdf8" stroke-width="1.8" width="86" x="692" y="98"></rect><text fill="#bfe6ff" text-anchor="middle" x="735" y="117">lens 2</text>
+<rect fill="#0e1b26" height="28" rx="8" stroke="#38bdf8" stroke-width="1.8" width="86" x="692" y="147"></rect><text fill="#bfe6ff" text-anchor="middle" x="735" y="166">lens 3</text>
+<rect fill="#0e1b26" height="28" rx="8" stroke="#38bdf8" stroke-width="1.8" width="86" x="692" y="196"></rect><text fill="#bfe6ff" text-anchor="middle" x="735" y="215">lens 4</text>
+<rect fill="#0e1b26" height="28" rx="8" stroke="#38bdf8" stroke-width="1.8" width="86" x="692" y="246"></rect><text fill="#bfe6ff" text-anchor="middle" x="735" y="265">lens 5</text>
+</g>
+<g fill="none" opacity="0.6" stroke="#34d399" stroke-width="1.7">
+<path d="M778,62 C828,62 832,150 866,150" marker-end="url(#m13-ahg)"></path>
+<path d="M778,112 C828,112 832,150 866,150" marker-end="url(#m13-ahg)"></path>
+<path d="M778,161 L866,161" marker-end="url(#m13-ahg)"></path>
+<path d="M778,210 C828,210 832,172 866,172" marker-end="url(#m13-ahg)"></path>
+<path d="M778,260 C828,260 832,172 866,172" marker-end="url(#m13-ahg)"></path>
+</g>
+<g filter="url(#m13-glow)"><rect fill="#0e2018" height="52" rx="12" stroke="url(#m13-grad)" stroke-width="2.5" width="104" x="866" y="135"></rect></g>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="918" y="166">1 result</text>
+</svg>
+</div>
+<p class="text-xs text-neutral-500 mb-6">On the left, an agent team: the gray lines connect <em>all</em> with <em>all</em> — they debate. On the right, STORM: the arrows only go from the main session to each subagent and back to a single result; the five lenses never connect to each other. STORM uses the right-hand approach because the opinions are cross-referenced afterward, in the contradiction map—not in the middle of the conversation.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Agent team (not what STORM does)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Agents talk → many messages, higher cost</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>One agent "convinces" the other → contaminates their opinions</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>More unpredictable and harder-to-audit result</span></li>
+</ul>
+</div>
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Isolated subagents (STORM)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Each lens gives its opinion without seeing the others → independent opinions</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Run everything in parallel in a single message → faster</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>The main session cross-checks the opinions afterward, in a controlled way</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span>
+<span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-1-3#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">⚠️ Convergence ≠ consensus</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question in this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t2-p1">This is the method’s most important safeguard, and it’s easy to forget. When the five lenses <strong class="text-neutral-100">agree</strong> in something, it's tempting to treat that as proof. But the five lenses have the <strong class="text-emerald-400">same author</strong>: Claude wrote the five prompts and Claude ran the five subagents. The panel is <strong class="text-emerald-400">original</strong>, not advice from five independent human experts.</p>
+<div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center"><span class="mr-2">🛡️</span> The safeguard, in one sentence</h3>
+<p class="text-neutral-300 mb-3">Agreement across lenses is a <strong class="text-neutral-100">strong hypothesis</strong> — a good bet for where to look first—, <strong class="text-neutral-100">not independent proof</strong>. And the STORM report <strong>always</strong> reveals that the panel was assembled by the author; it never presents convergence as "field consensus."</p>
+<p class="text-neutral-300 text-sm">It’s the evidence behind each lens that gives it weight — not the fact that five roles said the same thing.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ What convergence proves</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Whether the point holds up under several different framings</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Whether it belongs at the top of the list to verify first</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Whether it’s a good candidate for a “probably true finding”</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ What convergence does NOT prove</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Whether the field of real experts agrees</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Whether the cited number/study exists and is correct</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Which five “voices” count as five independent sources</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold mb-3">Why this protects you</h3>
+<p class="text-neutral-300 text-sm">Without this rule, you’d share a report saying “the five experts agree”—when in practice, you’d be citing the same model five times. Being upfront that the panel has a single author is what keeps you honest. The real proof comes in Phase 4 (topic 6), when each citation is checked against the original source.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-1-3#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🗺️ The contradiction map</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question in this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t3-p1">After the five perspectives return, the main session assembles the <strong class="text-emerald-400">contradiction map</strong>. Important detail: this is done <strong class="text-neutral-100">internally, without dispatching more agents</strong> — the main session reads the five briefings and cross-references everything on its own. The map has five items, and it isn’t a separate deliverable: it’s the <em>raw material</em> where the report’s findings come from.</p>
+<div class="space-y-5 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Direct conflict</h4><p class="text-neutral-300 text-sm">Where two or more lenses make claims <strong>opposing</strong>. This is where each side's specific claim is named—not just “they disagree on the topic,” but “lens A says X, lens B says not-X.”</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Strong × weak evidence</h4><p class="text-neutral-300 text-sm">Which side is better supported and which is weaker — using the evidence hierarchy (topic 5). Someone who brought a peer-reviewed causal study beats someone who brought an analogy.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">The question that resolves it</h4><p class="text-neutral-300 text-sm">A <strong>single empirical question</strong> that, if answered, would resolve the biggest contradiction. This is what separates a "fixed opinion" from a "question you can investigate."</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Universal agreement</h4><p class="text-neutral-300 text-sm">What <strong>all</strong> the lenses confirm it — including the skeptic. It’s the strongest candidate for a true finding. You’ll dig deeper in topic 4.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">5</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Blind spot</h4><p class="text-neutral-300 text-sm">What <strong>none</strong> covered. It becomes the “missing sixth lens” and informs the boundary question — also in topic 4.</p></div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> New here? — “empirical”</h3>
+<p class="text-neutral-300 text-sm">A question <strong>empirical</strong> is one that can be answered with real-world data (“what was the adoption rate in 2024?”), not opinion. Item 3 on the map looks specifically for that question: the one that would measure who is right.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-1-3#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🤝 Universal agreement and blind spot</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question in this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t4-p1">Two items on the map deserve highlighting because they become central parts of the report. They are the two extremes: what <strong class="text-emerald-400">everyone confirms</strong> and what <strong class="text-emerald-400">no one looked</strong>.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-3 flex items-center"><span class="mr-2">🤝</span> Universal agreement</h4>
+<p class="text-neutral-300 text-sm mb-3">The point that appears in <strong>all</strong> the lenses — including the skeptic’s, whose mission was to attack it. If even the one who tried to tear it down couldn’t, it’s your <strong>most likely finding</strong>.</p>
+<p class="text-neutral-400 text-xs">→ Remember topic 2: even so, this is a strong hypothesis, not proof. It only becomes a conclusion after verification in Phase 4.</p>
+</div>
+<div class="bg-dark-800 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-3 flex items-center"><span class="mr-2">🕳️</span> Blind spot → missing 6th lens</h4>
+<p class="text-neutral-300 text-sm mb-3">The angle that <strong>none</strong> touched by one of the five lenses. Instead of ignoring it, STORM names it the “<strong>missing sixth lens</strong>": what perspective, if it existed, could change the conclusions?"</p>
+<p class="text-neutral-400 text-xs">→ This feeds into the <strong>boundary question</strong>: the question whose answer would change everything.</p>
+</div>
+</div>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-center flex-wrap gap-3 text-sm text-center">
+<span class="px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 font-semibold">Blind spot</span>
+<span class="text-neutral-500">→</span>
+<span class="px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 font-semibold">Missing 6th lens</span>
+<span class="text-neutral-500">→</span>
+<span class="px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 font-semibold">Boundary question</span>
+</div>
+<p class="text-xs text-neutral-500 text-center mt-3">What no one saw doesn’t disappear: it becomes the next question to investigate. That’s how the report tells you “where to look next.”</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-1-3#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">📊 Reliability = evidence quality</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question in this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t5-p1">Each finding in the report gets a reliability score from 1 to 10. This score doesn't measure how "confident" the model "feels" — it measures the <strong class="text-emerald-400">source quality</strong> behind the claim. To do this, STORM uses a fixed hierarchy: the <strong class="text-neutral-100">evidence ladder</strong>, from strongest to weakest.</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center"><span class="mr-2">🪜</span> The evidence ladder</h3>
+<ol class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">1</span><span><strong class="text-neutral-100">Peer-reviewed causal</strong> — studies showing cause and effect that have passed peer review (e.g., controlled trials, meta-analyses). <span class="text-emerald-400">Stronger.</span></span></li>
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">2</span><span><strong class="text-neutral-100">Official / financial data</strong> — government statistics, audited financial statements, public records.</span></li>
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">3</span><span><strong class="text-neutral-100">Commissioned single research</strong> — a survey or paid study, without replication. Useful, but treat it with caution.</span></li>
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">4</span><span><strong class="text-neutral-100">Analogy</strong> — “this looks like that thing from the past.” It sheds light, but doesn’t prove anything.</span></li>
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">5</span><span><strong class="text-neutral-100">Preprint</strong> — published study <em>before</em> peer review. <span class="text-red-400">Weaker.</span> Promising, but unverified.</span></li>
+</ol>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> New here? — reliability ≠ confidence</h3>
+<p class="text-neutral-300 text-sm"><strong>Reliability</strong> is objective: it comes from the source’s position on the ladder above. <strong>Subjective confidence</strong> is how much something <em>sounds</em> convincing. A text can sound utterly confident while relying on a weak preprint — low score. And it can sound lukewarm while relying on a solid causal study — high score. In STORM, the evidence ladder wins, not the tone.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-1-3#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">✅ Verify primary sources</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question in this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-3-t6-p1">This is Phase 4 — and it’s what separates STORM from “asking for a polished report.” Before delivering, the main session launches verifiers (more subagents, ~4 to 6, one per citation group) that check <strong class="text-emerald-400">each citation against the actual source</strong>: does the study exist? Is the number correct? Is it published or a preprint? A <strong class="text-neutral-100">primary source</strong> is the data’s direct source — the study itself, the financial statement, the official document — not a blog that summarized it.</p>
+<div class="mb-6">
+<p class="text-neutral-300 mb-3 text-sm">Each citation receives a <strong>verdict</strong>:</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-semibold border border-emerald-500/30">CONFIRMED</span>
+<span class="px-3 py-1.5 rounded-lg bg-dark-700 text-neutral-300 text-xs font-semibold border border-dark-600">PARTIALLY CONFIRMED</span>
+<span class="px-3 py-1.5 rounded-lg bg-dark-700 text-neutral-300 text-xs font-semibold border border-dark-600">UNVERIFIED</span>
+<span class="px-3 py-1.5 rounded-lg bg-red-900/30 text-red-400 text-xs font-semibold border border-red-500/30">FALSE</span>
+</div>
+</div>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">verification banner (top of the report)</span><span class="text-xs text-neutral-500">example</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-emerald-400">Verificação:</span> 11/11 citações checadas
+<span class="text-emerald-400">→</span> <span class="text-red-400">2 fabricadas</span> (cortadas), 3 corrigidas, 1 rebaixada</pre>
+</div>
+<p class="text-neutral-300 text-sm mb-6">The banner should be <strong>true</strong>: if 2 numbers didn’t exist, it says “2 fabricated.” Weak or disputed citations are <em>downgraded</em> for the "contested signal" sidebar instead of becoming a conclusion.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Properly verified</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Checks the primary source, not someone else’s summary</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Cut or downgrade what can’t be verified—without disguising it</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>The banner reflects what was actually found</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Red flags</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Report delivered <strong>without</strong> Phase 4—it isn’t STORM</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>“0 fabricated” banner without actually checking</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>An unverified number kept as if it were fact</span></li>
+</ul>
+</div>
+</div>
+<!-- CHECAGEM LEVE -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-1-3#q1">
+<p class="font-medium mb-4">Self-recovery (optional): a report was delivered without running Phase 4. What does that mean?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Nothing — agreement among the five lenses is proof enough.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">It's not a STORM report: citations may contain fabricated or unverified numbers.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">It’s cheaper and just as reliable.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read ✓</span>
+</button>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Module summary</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Subagents don’t talk to each other</strong><span class="text-neutral-400"> — the main session launches the 5 isolated lenses; an agent team (that talks) would cost more and contaminate their opinions.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Convergence ≠ consensus</strong><span class="text-neutral-400"> — the panel is original work; agreement is a strong hypothesis, not proof. The report always makes this clear.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">The contradiction map</strong><span class="text-neutral-400"> — internal, 5 items: direct conflict, strong×weak evidence, the question that resolves it, universal agreement, and blind spot.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Reliability = quality of the source</strong><span class="text-neutral-400"> — the evidence ladder, from peer-reviewed causal evidence to preprints; it’s not about a convincing tone.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Without Phase 4, it isn’t STORM</strong><span class="text-neutral-400"> — every citation is checked against the primary source; the verification banner has to be accurate.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-emerald-400 mb-2">Next module:</h3><p class="text-neutral-300">2.1 — Skill Anatomy <span class="text-neutral-500">(starts Track 2: Practice)</span></p></div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Back to Track</a>
+<a class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors" href="../trilha2/modulo-2-1.html">Track 2: 2.1 →</a>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · INEMA Course · 2026 · <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a></p></div>
+</footer>
+<script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-1-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não: convergência é hipótese forte, não prova — o painel é autoral. Só a verificação na fonte transforma em conclusão.',
+            1: 'Exato: sem a Fase 4 nada foi checado contra a fonte primária, então pode haver número fabricado ou não verificado. Não é um relatório STORM.',
+            2: 'Fica mais barato, mas NÃO igualmente confiável — pular a verificação é justamente o que tira a garantia do método.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

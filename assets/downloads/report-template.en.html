@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <!--
   STORM RESEARCH REPORT TEMPLATE
   Clone this file, fill every {{TOKEN}}, delete instructional comments, repeat the
@@ -8,12 +9,12 @@
 -->
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Storm Research: {{TOPIC_TITLE}}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Roboto+Mono:wght@400;500;600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --blue: #2563eb; --blue-dark: #1e3a8a; --ink: #16203a; --muted: #5b6677; --line: #e4e9f2;
@@ -118,147 +119,134 @@
   @media (max-width: 640px) { .page { padding: 40px 24px 56px; } h1 { font-size: 30px; } }
   @media print { body { background: #fff; } .page { box-shadow: none; max-width: 100%; padding: 0; } .connection, .oncam-col { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
 </style>
-</head>
-<body>
+<link href="https://inematds.github.io/storm-research/assets/downloads/report-template.en.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/storm-research/en/assets/downloads/report-template.en.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/storm-research/es/assets/downloads/report-template.en.html" hreflang="es" rel="alternate"/></head>
+<body><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="report-template.en.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">PT</a><a href="../../en/assets/downloads/report-template.en.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="../../es/assets/downloads/report-template.en.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
 <div class="page">
-
-  <header>
-    <div class="eyebrow">Storm Research &middot; v2 (verified)</div>
-    <h1>{{TOPIC_TITLE}}</h1>
-    <p class="lede">A five-lens synthesis: practitioner, academic, skeptic, economist, and historian. Every claim independently checked against its primary source before publication.</p>
-    <div class="meta-row">
-      <span><b>Date</b> &nbsp;{{DATE}}</span>
-      <span><b>Method</b> &nbsp;5 author-built expert lenses + contradiction map</span>
-      <span><b>Audience</b> &nbsp;{{AUDIENCE: the reader's role; omit this span if none given}}</span>
-    </div>
-    <div class="verify-banner">
-      <span class="tag">Verified</span>
-      <span>All {{N}} citations independently checked against primary sources on {{DATE}}. <b>Result: {{X}} fabricated, {{Y}} corrected, {{Z}} demoted.</b> Confidence scores reflect post-verification evidence quality.</span>
-    </div>
-    <div class="howto">
-      <h4>How to read this</h4>
-      <ul>
-        <li><b>The panel was author-constructed.</b> All five lenses share one framing, so where they agree, treat it as a strong hypothesis, not independent proof.</li>
-        <li><b>Confidence is scored 1-10</b> on evidence quality: peer-reviewed causal work &gt; official policy/financial data &gt; single commissioned survey &gt; analogy &gt; preprint.</li>
-        <li><b>Measured fact and interpretation are flagged separately.</b> A high score means the data is solid, not that the strategic reading is certain.</li>
-      </ul>
-    </div>
-  </header>
-
-  <!-- ============ 01 CEO SUMMARY ============ -->
-  <section class="section">
-    <div class="section-num">01</div>
-    <h2><span class="bar"></span>The 60-Second Summary</h2>
-    <div class="ceo">
-      <p style="margin-bottom:0;">{{CEO_SUMMARY: one dense paragraph for a CEO with 60 seconds. Lead with the settled fact, then the contested interpretation, then the tension. Bold the single most important sentence. Nuance, not headline.}}</p>
-    </div>
-  </section>
-
-  <!-- ============ 02 KEY FINDINGS (ranked by reliability, highest first) ============ -->
-  <section class="section">
-    <div class="section-num">02</div>
-    <h2><span class="bar"></span>Five Key Findings, Ranked by Reliability</h2>
-
-    <!-- REPEAT this .finding block 5x. rel class: high | medhigh | medium | low. score 1-10. -->
-    <div class="finding">
-      <div class="finding-head">
-        <div class="finding-title">{{FINDING_TITLE}}</div>
-        <div class="finding-rank">{{N}}</div>
-      </div>
-      <div class="rel-row">
-        <div class="rel {{RELCLASS}}">Reliability: {{RELIABILITY_LABEL}}</div>
-        <div class="score"><b>{{SCORE}}</b><span>/10</span></div>
-      </div>
-      <p>{{FINDING_BODY: what it says, the evidence, and the verified caveat that caps the score. Bold any correction made during verification.}}</p>
-      <div class="chips">
-        <div class="chip-row"><span class="chip-label sup">Supported by</span><span class="who">{{WHICH LENSES + the actual study/source}}</span></div>
-        <div class="chip-row"><span class="chip-label chal">Challenged by</span><span class="who">{{WHICH LENSES disagree, or "No one"}}</span></div>
-        <!-- add a 'fix' chip when verification forced a correction -->
-        <div class="chip-row"><span class="chip-label fix">Corrected</span><span class="who">{{what changed after primary-source check; delete if nothing changed}}</span></div>
-      </div>
-    </div>
-
-    <!-- CONTESTED / DEMOTED claims sidebar. Use for any claim verification flagged as contested or preprint. Delete if none. -->
-    <div class="contested">
-      <div class="tag">Contested signal &middot; monitor, do not assert &middot; confidence {{SCORE}}/10</div>
-      <h4>{{CLAIM_TITLE}}</h4>
-      <p>{{Why it is contested: the critique, the counter-evidence, the source. Tell the reader not to state it as fact.}}</p>
-    </div>
-  </section>
-
-  <!-- ============ 03 HIDDEN CONNECTION ============ -->
-  <section class="section">
-    <div class="connection">
-      <div class="section-num">03</div>
-      <h2><span class="bar"></span>The Hidden Connection</h2>
-      <p>{{Set up the apparent contradiction between two findings.}}</p>
-      <p>{{Resolve it: the non-obvious link only visible across all five lenses.}}</p>
-      <p class="punch">{{The one-sentence payoff. If it leans on a weak finding, say so in parentheses.}}</p>
-    </div>
-  </section>
-
-  <!-- ============ 03b KEY ASSUMPTION / MISSING 6TH LENS ============ -->
-  <section class="section">
-    <div class="assume">
-      <h3>The assumption this briefing rests on (and the missing 6th lens)</h3>
-      <p>{{What variables the five lenses froze. Name the 6th perspective that would change the conclusions, not just add nuance.}}</p>
-      <p>{{The one omission that could invert the findings. Build with this caveat in mind.}}</p>
-    </div>
-  </section>
-
-  <!-- ============ 04 ACTIONABLE INSIGHT ============ -->
-  <section class="section">
-    <div class="section-num">04</div>
-    <h2><span class="bar"></span>What To Actually Do Differently</h2>
-    <p class="body-lg" style="color:var(--muted);">{{Who this is for + framing: specific moves, not principles.}}</p>
-    <!-- REPEAT 3-6 action items -->
-    <div class="action-item">
-      <div class="action-mark">{{NN}}</div>
-      <div><span class="do">{{The move in a sentence.}}</span><p>{{Why + exactly how, tied to a finding.}}</p></div>
-    </div>
-  </section>
-
-  <!-- ============ 04b CLAIM SAFETY GUIDE (assert / caveat / avoid) ============ -->
-  <section class="section">
-    <div class="section-num">04b</div>
-    <h2><span class="bar"></span>What's Safe to Assert</h2>
-    <div class="oncam">
-      <div class="oncam-col safe">
-        <h4>✓ Safe — verified against primary source</h4>
-        <ul><li>{{Claims confirmed by official/primary sources, safe to state flatly.}}</li></ul>
-      </div>
-      <div class="oncam-col caveat">
-        <h4>⚠ Say with a caveat</h4>
-        <ul><li>{{Claims that need attribution or qualification.}}</li></ul>
-      </div>
-      <div class="oncam-col avoid">
-        <h4>✕ Don't assert</h4>
-        <ul><li>{{Contested, preprint, or unverifiable claims. Name them so they don't slip back in.}}</li></ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 05 FRONTIER QUESTION ============ -->
-  <section class="section">
-    <div class="section-num">05</div>
-    <h2><span class="bar"></span>The Frontier Question</h2>
-    <div class="frontier">
-      <div class="q">{{The one question that would change everything if answered.}}</div>
-      <p>{{Why it matters: what it threatens, why no lens addressed it, what answering it unlocks.}}</p>
-    </div>
-  </section>
-
-  <!-- ============ REFERENCES with verification status ============ -->
-  <div class="refs">
-    <h3>Evidence base &middot; verification status</h3>
-    <ul>
-      <!-- REPEAT per citation. vstat class: ok (confirmed) | part (corrected/partial) | weak (demoted/preprint/contested). -->
-      <li><span class="vstat {{ok|part|weak}}">{{Confirmed|Corrected|Contested|Demoted}}</span> {{Full citation: authors, year, title, venue, the key figure, and any limit found during verification.}} <a href="{{PRIMARY_URL}}">{{domain}}</a></li>
-    </ul>
-  </div>
-
-  <div class="footer">Storm Research v2 &middot; {{N}}/{{N}} citations independently verified against primary sources, {{DATE}} &middot; {{X}} fabricated, {{Y}} corrected, {{Z}} demoted &middot; Reliability = evidence quality, not author confidence</div>
-
+<header>
+<div class="eyebrow">Storm Research · v2 (verified)</div>
+<h1>{{TOPIC_TITLE}}</h1>
+<p class="lede">A five-lens synthesis: practitioner, academic, skeptic, economist, and historian. Every claim independently checked against its primary source before publication.</p>
+<div class="meta-row">
+<span><b>Date</b>  {{DATE}}</span>
+<span><b>Method</b>  5 author-built expert lenses + contradiction map</span>
+<span><b>Audience</b>  {{AUDIENCE: the reader's role; omit this span if none given}}</span>
+</div>
+<div class="verify-banner">
+<span class="tag">Verified</span>
+<span>All {{N}} citations independently checked against primary sources on {{DATE}}. <b>Result: {{X}} fabricated, {{Y}} corrected, {{Z}} demoted.</b> Confidence scores reflect post-verification evidence quality.</span>
+</div>
+<div class="howto">
+<h4>How to read this</h4>
+<ul>
+<li><b>The panel was author-constructed.</b> All five lenses share one framing, so where they agree, treat it as a strong hypothesis, not independent proof.</li>
+<li><b>Confidence is scored 1-10</b> on evidence quality: peer-reviewed causal work &gt; official policy/financial data &gt; single commissioned survey &gt; analogy &gt; preprint.</li>
+<li><b>Measured fact and interpretation are flagged separately.</b> A high score means the data is solid, not that the strategic reading is certain.</li>
+</ul>
+</div>
+</header>
+<!-- ============ 01 CEO SUMMARY ============ -->
+<section class="section">
+<div class="section-num">01</div>
+<h2><span class="bar"></span>The 60-Second Summary</h2>
+<div class="ceo">
+<p style="margin-bottom:0;">{{CEO_SUMMARY: one dense paragraph for a CEO with 60 seconds. Lead with the settled fact, then the contested interpretation, then the tension. Bold the single most important sentence. Nuance, not headline.}}</p>
+</div>
+</section>
+<!-- ============ 02 KEY FINDINGS (ranked by reliability, highest first) ============ -->
+<section class="section">
+<div class="section-num">02</div>
+<h2><span class="bar"></span>Five Key Findings, Ranked by Reliability</h2>
+<!-- REPEAT this .finding block 5x. rel class: high | medhigh | medium | low. score 1-10. -->
+<div class="finding">
+<div class="finding-head">
+<div class="finding-title">{{FINDING_TITLE}}</div>
+<div class="finding-rank">{{N}}</div>
+</div>
+<div class="rel-row">
+<div class="rel {{RELCLASS}}">Reliability: {{RELIABILITY_LABEL}}</div>
+<div class="score"><b>{{SCORE}}</b><span>/10</span></div>
+</div>
+<p>{{FINDING_BODY: what it says, the evidence, and the verified caveat that caps the score. Bold any correction made during verification.}}</p>
+<div class="chips">
+<div class="chip-row"><span class="chip-label sup">Supported by</span><span class="who">{{WHICH LENSES + the actual study/source}}</span></div>
+<div class="chip-row"><span class="chip-label chal">Challenged by</span><span class="who">{{WHICH LENSES disagree, or "No one"}}</span></div>
+<!-- add a 'fix' chip when verification forced a correction -->
+<div class="chip-row"><span class="chip-label fix">Corrected</span><span class="who">{{what changed after primary-source check; delete if nothing changed}}</span></div>
+</div>
+</div>
+<!-- CONTESTED / DEMOTED claims sidebar. Use for any claim verification flagged as contested or preprint. Delete if none. -->
+<div class="contested">
+<div class="tag">Contested signal · monitor, do not assert · confidence {{SCORE}}/10</div>
+<h4>{{CLAIM_TITLE}}</h4>
+<p>{{Why it is contested: the critique, the counter-evidence, the source. Tell the reader not to state it as fact.}}</p>
+</div>
+</section>
+<!-- ============ 03 HIDDEN CONNECTION ============ -->
+<section class="section">
+<div class="connection">
+<div class="section-num">03</div>
+<h2><span class="bar"></span>The Hidden Connection</h2>
+<p>{{Set up the apparent contradiction between two findings.}}</p>
+<p>{{Resolve it: the non-obvious link only visible across all five lenses.}}</p>
+<p class="punch">{{The one-sentence payoff. If it leans on a weak finding, say so in parentheses.}}</p>
+</div>
+</section>
+<!-- ============ 03b KEY ASSUMPTION / MISSING 6TH LENS ============ -->
+<section class="section">
+<div class="assume">
+<h3>The assumption this briefing rests on (and the missing 6th lens)</h3>
+<p>{{What variables the five lenses froze. Name the 6th perspective that would change the conclusions, not just add nuance.}}</p>
+<p>{{The one omission that could invert the findings. Build with this caveat in mind.}}</p>
+</div>
+</section>
+<!-- ============ 04 ACTIONABLE INSIGHT ============ -->
+<section class="section">
+<div class="section-num">04</div>
+<h2><span class="bar"></span>What To Actually Do Differently</h2>
+<p class="body-lg" style="color:var(--muted);">{{Who this is for + framing: specific moves, not principles.}}</p>
+<!-- REPEAT 3-6 action items -->
+<div class="action-item">
+<div class="action-mark">{{NN}}</div>
+<div><span class="do">{{The move in a sentence.}}</span><p>{{Why + exactly how, tied to a finding.}}</p></div>
+</div>
+</section>
+<!-- ============ 04b CLAIM SAFETY GUIDE (assert / caveat / avoid) ============ -->
+<section class="section">
+<div class="section-num">04b</div>
+<h2><span class="bar"></span>What's Safe to Assert</h2>
+<div class="oncam">
+<div class="oncam-col safe">
+<h4>✓ Safe — verified against primary source</h4>
+<ul><li>{{Claims confirmed by official/primary sources, safe to state flatly.}}</li></ul>
+</div>
+<div class="oncam-col caveat">
+<h4>⚠ Say with a caveat</h4>
+<ul><li>{{Claims that need attribution or qualification.}}</li></ul>
+</div>
+<div class="oncam-col avoid">
+<h4>✕ Don't assert</h4>
+<ul><li>{{Contested, preprint, or unverifiable claims. Name them so they don't slip back in.}}</li></ul>
+</div>
+</div>
+</section>
+<!-- ============ 05 FRONTIER QUESTION ============ -->
+<section class="section">
+<div class="section-num">05</div>
+<h2><span class="bar"></span>The Frontier Question</h2>
+<div class="frontier">
+<div class="q">{{The one question that would change everything if answered.}}</div>
+<p>{{Why it matters: what it threatens, why no lens addressed it, what answering it unlocks.}}</p>
+</div>
+</section>
+<!-- ============ REFERENCES with verification status ============ -->
+<div class="refs">
+<h3>Evidence base · verification status</h3>
+<ul>
+<!-- REPEAT per citation. vstat class: ok (confirmed) | part (corrected/partial) | weak (demoted/preprint/contested). -->
+<li><span class="vstat {{ok|part|weak}}">{{Confirmed|Corrected|Contested|Demoted}}</span> {{Full citation: authors, year, title, venue, the key figure, and any limit found during verification.}} <a href="{{PRIMARY_URL}}">{{domain}}</a></li>
+</ul>
+</div>
+<div class="footer">Storm Research v2 · {{N}}/{{N}} citations independently verified against primary sources, {{DATE}} · {{X}} fabricated, {{Y}} corrected, {{Z}} demoted · Reliability = evidence quality, not author confidence</div>
 </div>
 </body>
 </html>

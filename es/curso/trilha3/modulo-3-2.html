@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="storm-research" name="inema-course"/>
+<meta content="Módulo 3.2 — El sistema de verificación: el banner honesto, las etiquetas de estado por cita y la jerarquía de confiabilidad que se convierte en una calificación de 1–10." name="description"/>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<title>Módulo 3.2 · El sistema de verificación | STORM Research</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+<link href="https://inematds.github.io/storm-research/curso/trilha3/modulo-3-2.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/storm-research/en/curso/trilha3/modulo-3-2.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/storm-research/es/curso/trilha3/modulo-3-2.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha3/modulo-3-2.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha3/modulo-3-2.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-3-2.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-purple-400 focus:rounded-lg" href="#conteudo">Saltar al contenido</a>
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Practica</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10" href="index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Avanzado</span>
+</a>
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>Mi recorrido</span>
+<span aria-hidden="true" class="inema-journey-badge" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<div class="relative">
+<button aria-expanded="false" aria-haspopup="true" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" title="Apariencia y lectura" type="button">
+<span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Apariencia</span>
+</button>
+<div class="inema-appearance-pop" data-inema-appearance="" data-open="false" id="appearance-pop" style="right:0;">
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tema</span><div class="inema-segment">
+<button data-inema-set-theme="inema-dark" type="button">Oscuro</button><button data-inema-set-theme="claro" type="button">Claro</button><button data-inema-set-theme="sepia" type="button">Sepia</button><button data-inema-set-theme="contraste" type="button">Alto contraste</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Fuente</span><div class="inema-segment">
+<button data-inema-set-font="inter" type="button">Inter</button><button data-inema-set-font="system" type="button">Sistema</button><button data-inema-set-font="leitura" type="button">Lectura</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tamaño</span><div class="inema-segment">
+<button data-inema-set-fontscale="100" type="button">A</button><button data-inema-set-fontscale="112" type="button">A+</button><button data-inema-set-fontscale="125" type="button">A++</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Interlineado</span><div class="inema-segment">
+<button data-inema-set-leading="1.45" type="button">Compacto</button><button data-inema-set-leading="1.7" type="button">Cómodo</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Acento</span><div class="inema-accent-grid">
+<button data-accent="emerald" data-inema-set-accent="emerald" title="Esmeralda" type="button"></button><button data-accent="blue" data-inema-set-accent="blue" title="Azul" type="button"></button><button data-accent="purple" data-inema-set-accent="purple" title="Morado" type="button"></button><button data-accent="amber" data-inema-set-accent="amber" title="Ámbar" type="button"></button><button data-accent="teal" data-inema-set-accent="teal" title="Teal" type="button"></button><button data-accent="rose" data-inema-set-accent="rose" title="Rosa" type="button"></button>
+</div></div>
+</div>
+</div>
+<button aria-label="Alternar entre claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Alternar entre claro y oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-purple-400" href="../../index.html">Inicio</a><span>/</span>
+<a class="hover:text-purple-400" href="index.html">Trilha 3</a><span>/</span>
+<span class="text-purple-400">Módulo 3.2</span>
+</div>
+</nav>
+<header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.2</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🔎 El sistema de verificación</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">La Fase 4 es lo que distingue a STORM de cualquier informe. Aquí aprenderás a leer —y exigir— el sistema que hace que cada número sea confiable: el banner de verificación, las etiquetas de estado de cada cita y la jerarquía de confiabilidad que determina la calificación del 1 al 10.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~40</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Avanzado</div><div class="text-xs text-neutral-400">Nivel</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Teoría</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<div class="mt-6 max-w-md"><div aria-label="Progreso del módulo 3.2" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:3-2" role="progressbar">
+<div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Progreso del módulo</strong><span class="inema-meter-pct text-purple-400 font-bold">0%</span></div>
+<div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 de 6 temas leídos</span>
+</div></div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+<!-- TOC -->
+<nav aria-label="Índice de la página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-1">1. El banner de verificación</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-2">2. Etiquetas de estado por cita</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-3">3. La jerarquía en la práctica</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-4">4. Preprint × publicado</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-5">5. Señal cuestionada</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-6">6. Leer críticamente</a></li>
+</ul>
+</nav>
+<main class="inema-prose min-w-0" id="conteudo">
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-3-2#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🚩 El banner de verificación</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t1-p1">Todo informe de STORM termina la Fase 4 mostrando un <strong class="text-purple-400">banner de verificación</strong> en la parte superior. Es la prueba pública de que el pipeline se ejecutó de verdad: un resumen breve que indica cuántas citas se verificaron y qué cambió en el proceso. Sin este banner real, lo que tienes no es un briefing STORM, sino una opinión bien presentada.</p>
+<div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center"><span class="mr-2">📊</span> Qué mide el banner</h3>
+<ul class="space-y-2 text-neutral-300">
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span><strong class="text-neutral-100">N/N verificadas</strong> — cuántas citas pasaron por un verificador independiente (idealmente, todas).</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span><strong class="text-neutral-100">X fabricadas</strong> — afirmaciones cuyo número o estudio no existía y que se eliminaron.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span><strong class="text-neutral-100">Y corregidas</strong> — número, autor, año o caracterización que eran incorrectos y se ajustaron.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span><strong class="text-neutral-100">Z degradadas</strong> — evidencia débil que perdió puntos o pasó a la barra de señal en disputa.</span></li>
+</ul>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> ¿Nuevo aquí? — fabricada / corregida / degradada</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li><strong>Fabricada:</strong> la fuente primaria no existe o no dice eso. No se puede "corregir": se elimina del informe.</li>
+<li><strong>Corregida:</strong> la fuente existe, pero algún detalle (el valor, el año, quién firma) estaba equivocado y se corrigió.</li>
+<li><strong>Rebajada:</strong> la fuente es real y correcta, pero frágil (preprint, estudio único). La afirmación se mantiene, con menos peso.</li>
+</ul>
+</div>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">banner de verificación (parte superior del informe)</span><span class="text-xs text-neutral-500">ejemplo real</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-purple-400">VERIFICAÇÃO</span> · 14/14 checadas
+  <span class="text-purple-400">1</span> fabricada · <span class="text-purple-400">3</span> corrigidas · <span class="text-purple-400">2</span> rebaixadas</pre>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Banner honesto</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Refleja lo que realmente ocurrió en la Fase 4</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Admite cuando algo fue inventado o rebajado</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>La puntuación coincide con las etiquetas de las referencias</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Banner cosmético</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Todo verificado" sin que nadie haya comprobado nada</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Pone en cero las fabricadas/degradadas para que parezca limpio</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>No corresponde a las etiquetas de abajo</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-3-2#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🏷️ Etiquetas de estado por cita</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t2-p1">El banner es el resumen; las <strong class="text-purple-400">etiquetas por cita</strong> son el detalle. Cada referencia de la sección final lleva un veredicto visible para que sepas, elemento por elemento, en qué estado está esa afirmación. Un verificador independiente devuelve uno de estos seis estados:</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-purple-500/30"><div class="text-purple-400 font-bold text-sm mb-1">CONFIRMADO</div><p class="text-xs text-neutral-400">La fuente primaria coincide con la afirmación.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-neutral-100 font-bold text-sm mb-1">CONFIRMADO PARCIALMENTE</div><p class="text-xs text-neutral-400">La parte coincide; quedó un matiz o una salvedad.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-yellow-400 font-bold text-sm mb-1">CORREGIDO</div><p class="text-xs text-neutral-400">Número/año/autor ajustado al valor real.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-yellow-400 font-bold text-sm mb-1">REBAJADO</div><p class="text-xs text-neutral-400">Evidencia débil: perdió puntos o pasó a la barra lateral.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-neutral-400 font-bold text-sm mb-1">NO VERIFICADO</div><p class="text-xs text-neutral-400">No fue posible encontrar la fuente primaria.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-red-500/30"><div class="text-red-400 font-bold text-sm mb-1">FALSO</div><p class="text-xs text-neutral-400">La fuente no lo respalda: se eliminó del cuerpo.</p></div>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed">¿Por qué tantas categorías? Porque "verdadero/falso" oculta el caso más común: la afirmación es casi correcta, pero la cifra estaba equivocada. Mira cómo una sola cita avanza hasta recibir su etiqueta:</p>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">A</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">La afirmación llega</h4><p class="text-neutral-300 text-sm">"El mercado X creció un 40% en 2024, según el informe Y." Se envía a un verificador junto con la cifra y la fuente nombrada.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">B</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Busca la fuente primaria</h4><p class="text-neutral-300 text-sm">El agente va al informe original — no a un blog que lo resumió — y comprueba el título, el autor, el año, el número y el método.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">C</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Devuelve el veredicto</h4><p class="text-neutral-300 text-sm">Encuentra un 34%, no un 40%, y que el dato proviene de una única encuesta encargada. Veredicto: CORREGIDO + señal de evidencia débil.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">D</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Se convierte en etiqueta + puntuación</h4><p class="text-neutral-300 text-sm">La referencia recibe la etiqueta CORREGIDO, el texto pasa a decir 34% y la nota de confiabilidad del hallazgo baja.</p></div>
+</div>
+</div>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">sección de referencias (extracto)</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-purple-400">[CONFIRMADO]</span>   Doe et al. (2023), Nature — RCT, n=820
+<span class="text-yellow-400">[CORRIGIDO]</span>    Relatório Y (2024) — 34%, não 40%
+<span class="text-yellow-400">[REBAIXADO]</span>    Preprint Z (2024) — não revisado por pares
+<span class="text-red-400">[FALSO]</span>        "Estudo" sem fonte primária localizável</pre>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-3-2#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">📊 La jerarquía de confiabilidad en la práctica</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t3-p1">En el Módulo 1.3 viste el principio: <strong class="text-purple-400">confiabilidad = calidad de la evidencia, no confianza subjetiva</strong>. Ahora se vuelve práctica. La nota de 1 a 10 de cada hallazgo no depende de cuánto «parece correcta» la afirmación, sino de <strong class="text-neutral-100">dónde se encuentra la evidencia en la escala</strong> abajo. Cuanto más alto el escalón, mayor la calificación.</p>
+<div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+<svg aria-label="Escalera ascendente de evidencia de cinco peldaños: preprint, analogía, investigación única, datos oficiales y, en la cima, destacado, causal revisado por pares; cada peldaño corresponde a un rango de la puntuación del 1 al 10" class="w-full h-auto" role="img" viewbox="0 0 1000 360">
+<defs>
+<lineargradient id="m32-grad" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#c084fc"></stop><stop offset="1" stop-color="#a855f7"></stop></lineargradient>
+<filter height="180%" id="m32-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="2.4"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m32-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#a855f7" opacity="0.1" r="1.3"></circle></pattern>
+<marker id="m32-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"></path></marker>
+</defs>
+<rect fill="url(#m32-grid)" height="360" width="1000" x="0" y="0"></rect>
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="17" font-weight="700" text-anchor="middle" x="500" y="32">Escalera de evidencia → puntuación 1–10</text>
+<!-- eixo de confiabilidade -->
+<line marker-end="url(#m32-ah)" stroke="#6b7280" stroke-width="2" x1="40" x2="40" y1="320" y2="60"></line>
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" transform="rotate(-90 28 190)" x="28" y="190">más confiable</text>
+<line stroke="#6b7280" stroke-width="2" x1="40" x2="960" y1="320" y2="320"></line>
+<!-- degraus ascendentes -->
+<g font-family="Inter,sans-serif">
+<!-- 1: preprint -->
+<rect fill="#1a1230" height="70" opacity="0.65" rx="8" stroke="#a855f7" stroke-width="1.8" width="160" x="60" y="250"></rect>
+<text fill="#e9d5ff" font-size="13" font-weight="600" text-anchor="middle" x="140" y="282">Preprint</text>
+<text fill="#9ca3af" font-size="11" text-anchor="middle" x="140" y="302">nota 1–3</text>
+<!-- 2: analogia -->
+<rect fill="#1a1230" height="110" opacity="0.75" rx="8" stroke="#a855f7" stroke-width="1.8" width="160" x="240" y="210"></rect>
+<text fill="#e9d5ff" font-size="13" font-weight="600" text-anchor="middle" x="320" y="242">Analogía</text>
+<text fill="#9ca3af" font-size="11" text-anchor="middle" x="320" y="262">nota 3–4</text>
+<!-- 3: pesquisa única -->
+<rect fill="#1a1230" height="150" opacity="0.85" rx="8" stroke="#a855f7" stroke-width="1.8" width="160" x="420" y="170"></rect>
+<text fill="#e9d5ff" font-size="13" font-weight="600" text-anchor="middle" x="500" y="202">Investigación única</text>
+<text fill="#9ca3af" font-size="11" text-anchor="middle" x="500" y="222">nota 5–6</text>
+<!-- 4: dados oficiais -->
+<rect fill="#1a1230" height="195" rx="8" stroke="#a855f7" stroke-width="2" width="160" x="600" y="125"></rect>
+<text fill="#e9d5ff" font-size="13" font-weight="600" text-anchor="middle" x="680" y="157">Datos oficiales</text>
+<text fill="#9ca3af" font-size="11" text-anchor="middle" x="680" y="177">nota 7–8</text>
+<!-- 5: causal revisado por pares (glow) -->
+<g filter="url(#m32-glow)"><rect fill="#241640" height="250" rx="8" stroke="url(#m32-grad)" stroke-width="2.6" width="170" x="780" y="70"></rect></g>
+<text fill="#c084fc" font-size="13" font-weight="700" text-anchor="middle" x="865" y="112">Causal revisado</text>
+<text fill="#c084fc" font-size="13" font-weight="700" text-anchor="middle" x="865" y="130">por pares</text>
+<text fill="#e9d5ff" font-size="11" text-anchor="middle" x="865" y="152">nota 9–10</text>
+<text fill="#c084fc" font-size="11" text-anchor="middle" x="865" y="300">lo más alto de la escalera</text>
+</g>
+</svg>
+</div>
+<p class="text-xs text-neutral-500 mb-6">La escalera va desde la evidencia más débil (preprint, abajo) hasta la más sólida (estudio causal revisado por pares, destacado en la cima). La posición del peldaño define el rango de la calificación: un número no se convierte en «10» por ser convincente; obtiene un 10 porque proviene del peldaño más alto.</p>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> ¿Nuevo por aquí? — «causal revisado por pares»</h3>
+<p class="text-neutral-300 text-sm"><strong>Revisado por pares</strong> = otros especialistas evaluaron el estudio antes de su publicación. <strong>Causal</strong> = el diseño muestra que A <em>causa</em> B (p. ej., ensayo controlado aleatorizado), no solo que ocurren juntos. Las dos cosas sumadas son el nivel más alto. Una <strong>analogía</strong> la histórica, por más elegante que sea, queda en segundo plano: sugiere, pero no prueba.</p>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold mb-3">Confiabilidad ≠ confianza subjetiva</h3>
+<p class="text-neutral-300 text-sm">Una afirmación que «suena obvia» puede estar en el nivel inferior (solo una analogía), y una contraintuitiva puede estar en el superior (RCT sólido). La puntuación sigue la fuente, no lo que te dicta la intuición; por eso el hallazgo más cómodo a veces recibe la puntuación más baja del informe.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-3-2#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">📄 Preprint × publicado / investigación única</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t4-p1">Dos casos requieren mano firme en la Fase 4: el <strong class="text-purple-400">preprint</strong> (estudio aún no revisado por pares) y la <strong class="text-purple-400">encuesta única por encargo</strong> (una cifra que proviene de un solo estudio, muchas veces financiado por quien se beneficia de ella). Ambos se incluyen en el informe, pero con el peso adecuado.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h4 class="font-bold text-neutral-100 mb-3">📄 Preprint</h4>
+<p class="text-neutral-300 text-sm mb-3">Resultado divulgado antes de la revisión. Puede estar totalmente acertado o no superar la revisión. La regla es <strong>degradar</strong>: la afirmación se mantiene, marcada como "preprint, no revisado", y la nota no puede llegar a la parte superior.</p>
+<p class="text-neutral-400 text-xs">Estado típico: REBAJADO + señal cuestionada.</p>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h4 class="font-bold text-neutral-100 mb-3">📐 Investigación única por encargo</h4>
+<p class="text-neutral-300 text-sm mb-3">Un número de una sola fuente, a veces encargada por una parte interesada. No lo conviertas en «el mercado creció X» — <strong>reasigne con honestidad</strong>: "según la investigación Y, encargada por Z".</p>
+<p class="text-neutral-400 text-xs">Estado típico: PARCIALMENTE CONFIRMADO / REBAJADO.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Tratamiento correcto</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Indica el estado: "preprint", "investigación por encargo"</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Atribuye el número a la fuente real, no al «consenso»</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Reduce la nota de confiabilidad del hallazgo</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Error común</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Tratar un preprint como un estudio consolidado</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Presentar un número encargado como un hecho neutral</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Dar una calificación alta porque «todo el mundo lo cita»</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-3-2#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">⚖️ La barra lateral de señal cuestionada</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t5-p1">No toda evidencia débil debe desaparecer; simplemente no puede mezclarse con los hallazgos sólidos. Para eso existe el <strong class="text-purple-400">señal cuestionada</strong>: una barra lateral donde aparecen las afirmaciones disputadas y los preprints, siempre acompañados de la <strong class="text-neutral-100">fuente contraria más sólida</strong>. Es la forma honesta de decir "esto está en línea" sin fingir que ya está resuelto.</p>
+<div class="bg-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+<div class="text-xs font-semibold text-purple-400 uppercase tracking-wide mb-3">⚖️ Señal cuestionada (ejemplo)</div>
+<p class="text-neutral-300 text-sm mb-3"><strong class="text-neutral-100">Afirmación:</strong> "La tecnología X reduce los costos en un 30%." — origen: preprint de 2024, aún no revisado.</p>
+<p class="text-neutral-300 text-sm"><strong class="text-neutral-100">La fuente contraria más sólida:</strong> un análisis oficial del sector (2023) señala una mejora de ~8% en entornos reales. Mientras no se resuelva la contradicción, la cifra queda aquí — fuera de los hallazgos clasificados.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Por qué la fuente contraria va de la mano</h3>
+<p class="text-neutral-300 text-sm">Mostrar solo la afirmación en disputa todavía le da un escenario. Juntarla con la mejor evidencia del otro lado convierte la barra lateral en un mini debate justo y deja claro al lector que todavía no hay un ganador. Es la «pregunta empírica que lo resolvería» de la Fase 2, en forma visible.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-3-2#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🧐 Leer con sentido crítico incluso cuando está verificado</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-2-t6-p1">La Fase 4 reduce mucho el riesgo, pero no te exime de pensar. Recuerda la protección central del método: <strong class="text-purple-400">el panel lo construye el autor</strong>. Las cinco lentes salieron del mismo modelo, así que la convergencia entre ellas es una hipótesis sólida, no un consenso independiente del campo. Para lo que realmente importa en tu decisión, <strong class="text-neutral-100">ve tú a la fuente primaria</strong>.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Lectura crítica</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Verifica tú los 2–3 números que cambian tu decisión</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Lee el banner y las etiquetas antes de citar el informe</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Trata la convergencia como una hipótesis, no como una prueba</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Confianza ciega</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Copia números sin mirar la etiqueta de estado</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Interpreta «5 lentes coinciden» como la verdad del campo</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Ignora la barra de señal cuestionada</span></li>
+</ul>
+</div>
+</div>
+<!-- CHECAGEM LEVE -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-3-2#q1">
+<p class="font-medium mb-4">Recuperación automática (opcional): ¿qué fuente respalda la MAYOR puntuación de confiabilidad?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Un preprint recién publicado, aún no revisado por pares</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Una analogía histórica bien construida</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Un estudio causal revisado por pares (p. ej., RCT)</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">El banner debe ser verdadero</strong><span class="text-neutral-400"> — N/N verificadas, X inventadas, Y corregidas, Z rebajadas; sin esto, no es STORM.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Cada cita recibe una etiqueta</strong><span class="text-neutral-400"> — de CONFIRMADO a FALSO; «corregido» es el caso más común.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">La nota asciende por la escala de evidencia</strong><span class="text-neutral-400"> — causal revisada por pares arriba, preprint abajo.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Aunque esté verificado, léelo de forma crítica</strong><span class="text-neutral-400"> — el panel es de autoría propia; verifica tú las cifras que son decisivas.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-purple-400 mb-2">Siguiente módulo:</h3><p class="text-neutral-300">3.3 — Personalizar y ampliar</p></div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la Trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors" href="modulo-3-3.html">Siguiente módulo →</a>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · Curso INEMA · 2026 · <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a></p></div>
+</footer>
+<script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-2#q1', {
+          answer: 2,
+          explain: {
+            0: 'Preprint fica no degrau mais baixo da escada — deve ser rebaixado, não recebe nota alta.',
+            1: 'Analogia sugere, mas não prova; fica num degrau intermediário-baixo da hierarquia.',
+            2: 'Exato: estudo causal revisado por pares é o topo da escada de evidência — a maior nota de confiabilidade.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="storm-research" name="inema-course"/>
+<meta content="Módulo 2.3 — El pipeline en 4 fases: del alcance a las cinco lentes, al mapa de contradicciones, a la síntesis HTML y a la verificación adversarial." name="description"/>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<title>Módulo 2.3 · El pipeline en 4 fases | STORM Research</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37,99,235,0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37,99,235,0.18); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+<link href="https://inematds.github.io/storm-research/curso/trilha2/modulo-2-3.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/storm-research/en/curso/trilha2/modulo-2-3.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/storm-research/es/curso/trilha2/modulo-2-3.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha2/modulo-2-3.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha2/modulo-2-3.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-2-3.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-blue-400 focus:rounded-lg" href="#conteudo">Saltar al contenido</a>
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Practica</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Avanzado</span>
+</a>
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>Mi recorrido</span>
+<span aria-hidden="true" class="inema-journey-badge" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<div class="relative">
+<button aria-expanded="false" aria-haspopup="true" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" title="Apariencia y lectura" type="button">
+<span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Apariencia</span>
+</button>
+<div class="inema-appearance-pop" data-inema-appearance="" data-open="false" id="appearance-pop" style="right:0;">
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tema</span><div class="inema-segment">
+<button data-inema-set-theme="inema-dark" type="button">Oscuro</button><button data-inema-set-theme="claro" type="button">Claro</button><button data-inema-set-theme="sepia" type="button">Sepia</button><button data-inema-set-theme="contraste" type="button">Alto contraste</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Fuente</span><div class="inema-segment">
+<button data-inema-set-font="inter" type="button">Inter</button><button data-inema-set-font="system" type="button">Sistema</button><button data-inema-set-font="leitura" type="button">Lectura</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tamaño</span><div class="inema-segment">
+<button data-inema-set-fontscale="100" type="button">A</button><button data-inema-set-fontscale="112" type="button">A+</button><button data-inema-set-fontscale="125" type="button">A++</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Interlineado</span><div class="inema-segment">
+<button data-inema-set-leading="1.45" type="button">Compacto</button><button data-inema-set-leading="1.7" type="button">Cómodo</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Acento</span><div class="inema-accent-grid">
+<button data-accent="emerald" data-inema-set-accent="emerald" title="Esmeralda" type="button"></button><button data-accent="blue" data-inema-set-accent="blue" title="Azul" type="button"></button><button data-accent="purple" data-inema-set-accent="purple" title="Morado" type="button"></button><button data-accent="amber" data-inema-set-accent="amber" title="Ámbar" type="button"></button><button data-accent="teal" data-inema-set-accent="teal" title="Teal" type="button"></button><button data-accent="rose" data-inema-set-accent="rose" title="Rosa" type="button"></button>
+</div></div>
+</div>
+</div>
+<button aria-label="Alternar entre claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Alternar entre claro y oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-blue-400" href="../../index.html">Inicio</a><span>/</span>
+<a class="hover:text-blue-400" href="index.html">Trilha 2</a><span>/</span>
+<span class="text-blue-400">Módulo 2.3</span>
+</div>
+</nav>
+<header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.3</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🪜 El pipeline en 4 fases</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">Con la skill instalada, abre el capó. Desde la interpretación del tema (Fase 0) hasta la entrega verificada, STORM sube cuatro escalones en una secuencia fija, y precisamente ese orden hace que el resultado sea completo y honesto.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">6</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~40</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Interm.</div><div class="text-xs text-neutral-400">Nivel</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Teoría</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<div class="mt-6 max-w-md"><div aria-label="Progreso del módulo 2.3" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:2-3" role="progressbar">
+<div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Progreso del módulo</strong><span class="inema-meter-pct text-blue-400 font-bold">0%</span></div>
+<div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 de 6 temas leídos</span>
+</div></div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+<!-- TOC -->
+<nav aria-label="Índice de la página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400 transition-colors" href="#topico-1">1. Fase 0 · Alcance</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400 transition-colors" href="#topico-2">2. Fase 1 · Cinco lentes</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400 transition-colors" href="#topico-3">3. Fase 2 · Contradicciones</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400 transition-colors" href="#topico-4">4. Fase 3 · Síntesis HTML</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400 transition-colors" href="#topico-5">5. Fase 4 · Verificación</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400 transition-colors" href="#topico-6">6. El resultado final</a></li>
+</ul>
+</nav>
+<main class="inema-prose min-w-0" id="conteudo">
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🎯 Fase 0 — Definir el alcance</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t1-p1">El pipeline tiene <strong class="text-blue-400">cuatro fases numeradas del 0 al 4</strong> que se ejecutan en un orden fijo. La Fase 0 es la preparación: antes de gastar un solo agente, Claude interpreta lo que pediste, decide a quién va dirigido el informe y prepara el nombre del archivo. Es económica y breve, pero define el enfoque de todo lo que viene después.</p>
+<div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+<svg aria-label="Escalera ascendente de cinco peldaños: Fase 0 Alcance, Fase 1 cinco perspectivas, Fase 2 mapa de contradicciones, Fase 3 síntesis HTML y, en la cima, destacada, Fase 4 verificación, de la que sale el briefing v2" class="w-full h-auto" role="img" viewbox="0 0 1000 380">
+<defs>
+<lineargradient id="m23-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop></lineargradient>
+<filter height="180%" id="m23-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="2.4"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m23-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#3b82f6" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m23-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#9ca3af"></path></marker>
+<marker id="m23-ahb" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"></path></marker>
+</defs>
+<rect fill="url(#m23-grid)" height="380" width="1000" x="0" y="0"></rect>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="15" font-weight="700" x="30" y="30">Pipeline STORM · cuatro pasos hasta el resultado verificado</text>
+<!-- treads (sombra de degrau) -->
+<g opacity="0.5">
+<rect fill="#1e3a5f" height="9" rx="3" width="150" x="30" y="344"></rect>
+<rect fill="#1e3a5f" height="9" rx="3" width="150" x="215" y="288"></rect>
+<rect fill="#1e3a5f" height="9" rx="3" width="150" x="400" y="232"></rect>
+<rect fill="#1e3a5f" height="9" rx="3" width="150" x="585" y="176"></rect>
+<rect fill="#1e3a5f" height="9" rx="3" width="150" x="770" y="120"></rect>
+</g>
+<!-- arrows ascendentes -->
+<g fill="none" opacity="0.75" stroke="#60a5fa" stroke-width="2.2">
+<path d="M180,312 L215,256" marker-end="url(#m23-ahb)"></path>
+<path d="M365,256 L400,200" marker-end="url(#m23-ahb)"></path>
+<path d="M550,200 L585,144" marker-end="url(#m23-ahb)"></path>
+<path d="M735,144 L770,88" marker-end="url(#m23-ahb)"></path>
+</g>
+<!-- cards -->
+<g font-family="Inter,sans-serif">
+<rect fill="#0e1622" height="64" rx="12" stroke="url(#m23-grad)" stroke-width="2.2" width="150" x="30" y="280"></rect>
+<text fill="#60a5fa" font-size="15" font-weight="700" text-anchor="middle" x="105" y="307">FASE 0</text>
+<text fill="#bfdbfe" font-size="12" text-anchor="middle" x="105" y="328">Alcance</text>
+<rect fill="#0e1622" height="64" rx="12" stroke="url(#m23-grad)" stroke-width="2.2" width="150" x="215" y="224"></rect>
+<text fill="#60a5fa" font-size="15" font-weight="700" text-anchor="middle" x="290" y="251">FASE 1</text>
+<text fill="#bfdbfe" font-size="12" text-anchor="middle" x="290" y="272">5 perspectivas en paralelo</text>
+<rect fill="#0e1622" height="64" rx="12" stroke="url(#m23-grad)" stroke-width="2.2" width="150" x="400" y="168"></rect>
+<text fill="#60a5fa" font-size="15" font-weight="700" text-anchor="middle" x="475" y="195">FASE 2</text>
+<text fill="#bfdbfe" font-size="12" text-anchor="middle" x="475" y="216">Mapa de contradicciones</text>
+<rect fill="#0e1622" height="64" rx="12" stroke="url(#m23-grad)" stroke-width="2.2" width="150" x="585" y="112"></rect>
+<text fill="#60a5fa" font-size="15" font-weight="700" text-anchor="middle" x="660" y="139">FASE 3</text>
+<text fill="#bfdbfe" font-size="12" text-anchor="middle" x="660" y="160">Sintetizar el HTML</text>
+<g filter="url(#m23-glow)">
+<rect fill="#0e2236" height="64" rx="12" stroke="url(#m23-grad)" stroke-width="3" width="150" x="770" y="56"></rect>
+</g>
+<text fill="#93c5fd" font-size="15" font-weight="800" text-anchor="middle" x="845" y="83">FASE 4</text>
+<text fill="#bfdbfe" font-size="12" text-anchor="middle" x="845" y="104">Revisión + verificación</text>
+</g>
+<!-- saída -->
+<g font-family="Inter,sans-serif" font-size="12">
+<rect fill="#0e1b26" height="26" rx="8" stroke="#38bdf8" stroke-width="1.8" width="150" x="770" y="20"></rect>
+<text fill="#bfe6ff" text-anchor="middle" x="845" y="37">briefing v2 (HTML)</text>
+<path d="M845,56 L845,46" fill="none" stroke="#38bdf8" stroke-width="1.8"></path>
+</g>
+</svg>
+</div>
+<p class="text-xs text-neutral-500 mb-6">Cada nivel empieza solo cuando termina el anterior. La Fase 4 (arriba, iluminada) es la que distingue un STORM de un informe común: nada llega al briefing v2 sin pasar por ella.</p>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> ¿Nuevo aquí? — dos términos de la Fase 0</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li><strong>lector objetivo:</strong> el perfil al que se dirige el informe (p. ej., "fundador de SaaS", "profesor"). Es lo que hace que el <em>hallazgo práctico</em> sé específico, no genérico.</li>
+<li><strong><code class="font-mono">topic-slug</code>:</strong> el tema convertido en nombre de archivo de texto (kebab-case): "¿Valen la pena los agentes de voz?" se convierte en <code class="font-mono text-blue-400">agentes-de-voz</code>. Se convierte en el nombre del HTML guardado.</li>
+</ul>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold mb-3">Las 4 decisiones de la Fase 0</h3>
+<ol class="space-y-2 text-neutral-300 text-sm list-decimal pl-5">
+<li><strong class="text-neutral-100">Interpretar el tema en 1 línea</strong> y seguir adelante; solo pregunta si es tan ambiguo que podría cambiar la investigación.</li>
+<li><strong class="text-neutral-100">Identificar al lector objetivo</strong> a partir del tema/contexto; apunta a la sección práctica correspondiente.</li>
+<li><strong class="text-neutral-100">Derivar el <code class="font-mono">topic-slug</code></strong> en kebab-case para el nombre del archivo.</li>
+<li><strong class="text-neutral-100">Avisarte</strong>, en una línea, que el pipeline ejecutará: 5 lentes y luego una verificación.</li>
+</ol>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🔭 Fase 1 — Cinco perspectivas en paralelo</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t2-p1">La Fase 1 crea <strong class="text-blue-400">cinco agentes <code class="font-mono">general-purpose</code> en un único mensaje</strong>, para que se ejecuten en paralelo. Cada uno recibe el MISMO enfoque del tema (definido en la Fase 0), más su propia lente: Práctico, Académico, Escéptico, Economista, Historiador (los conociste en el Módulo 1.2).</p>
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center"><span class="mr-2">⚡</span> Por qué en un solo mensaje</h3>
+<p class="text-neutral-300 text-sm mb-3">Activar los cinco en el mismo turno hace que se ejecuten <strong>al mismo tiempo</strong>, no en fila. Es más rápido y es lo que mantiene independientes a las lentes: ninguna ve la respuesta de las otras antes de escribir la suya.</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full bg-dark-800 border border-blue-500/30 text-blue-400 text-xs font-semibold">🛠️ Práctico</span>
+<span class="px-2.5 py-1 rounded-full bg-dark-800 border border-blue-500/30 text-blue-400 text-xs font-semibold">🎓 Académico</span>
+<span class="px-2.5 py-1 rounded-full bg-dark-800 border border-blue-500/30 text-blue-400 text-xs font-semibold">🔍 Escéptico</span>
+<span class="px-2.5 py-1 rounded-full bg-dark-800 border border-blue-500/30 text-blue-400 text-xs font-semibold">💰 Economista</span>
+<span class="px-2.5 py-1 rounded-full bg-dark-800 border border-blue-500/30 text-blue-400 text-xs font-semibold">🏛️ Historiador</span>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold mb-3">Las 3 cosas que cada perspectiva DEBE entregar</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<div class="bg-dark-900 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-bold text-sm mb-1">1 · Posición central</div><p class="text-xs text-neutral-400">En 2 frases.</p></div>
+<div class="bg-dark-900 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-bold text-sm mb-1">2 · Evidencia más sólida</div><p class="text-xs text-neutral-400">3–5 viñetas, cada una con un dato + una fuente identificada + URL.</p></div>
+<div class="bg-dark-900 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-bold text-sm mb-1">3 · Lo único</div><p class="text-xs text-neutral-400">Lo que solo esa lente diría.</p></div>
+</div>
+<p class="text-neutral-400 text-sm mt-4">Regla de oro: investigación real en la web, menos de <strong class="text-neutral-100">400 palabras</strong> cada una. Sin esto, se convierte en opinión — y STORM no trabaja con opiniones.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> La nota de convergencia/divergencia</h3>
+<p class="text-neutral-300 text-sm">Cuando vuelven los cinco, Claude publica <strong>2 a 3 líneas en el chat</strong> diciendo hacia dónde convergen las lentes y cuál es la divergencia más marcada. NO vuelca los briefings en bruto en el chat: son materia prima para las siguientes fases.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🗺️ Fase 2 — Mapa de contradicciones</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t3-p1">La Fase 2 es <strong class="text-blue-400">interna: sin agentes nuevos</strong>. Trabajando solo con los cinco briefings, Claude cruza las lentes y arma un mapa de cinco puntos. Ese mapa no es una entrega aparte: es la materia prima de los hallazgos, las etiquetas «apoya/desafía», la conexión oculta y la pregunta de frontera (viste el concepto en el Módulo 1.3; aquí se aplica).</p>
+<div class="space-y-4 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold mb-1">Conflictos directos</h4><p class="text-neutral-300 text-sm">Dónde dos o más lentes afirman lo opuesto: nombra las afirmaciones específicas, no solo el tema.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold mb-1">Evidencia fuerte × débil</h4><p class="text-neutral-300 text-sm">Qué perspectiva está mejor respaldada por la jerarquía de fuentes y cuál es más débil, y por qué.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold mb-1">La pregunta que resuelve</h4><p class="text-neutral-300 text-sm">La única pregunta empírica que resolvería la mayor contradicción del conjunto.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold mb-1">Acuerdo universal</h4><p class="text-neutral-300 text-sm">Lo que todas las lentes confirman, incluso la escéptica. Probablemente sea el hallazgo central verdadero.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">5</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold mb-1">Punto ciego</h4><p class="text-neutral-300 text-sm">Lo que NINGUNA lente abordó. Se convierte en la «sexta lente ausente» y alimenta la pregunta de frontera.</p></div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Recordatorio del 1.3: convergencia ≠ consenso</h3>
+<p class="text-neutral-300 text-sm">El «acuerdo universal» es una hipótesis sólida, no una prueba independiente: las cinco lentes tienen el mismo autor. El informe siempre lo revela. Estar de acuerdo no es lo mismo que haber alcanzado un consenso en el campo.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🧱 Fase 3 — Sintetizar el HTML</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t4-p1">En la Fase 3, Claude <strong class="text-blue-400">lee el <code class="font-mono">report-template.html</code> y lo clona</strong> — nunca recrea el CSS. Cada sección de la plantilla se completa a partir de las fases anteriores y el archivo se guarda en una ruta previsible dentro de tu proyecto.</p>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">dónde se guarda el informe</span><span class="text-xs text-neutral-500">relativo al directorio actual</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">storm-reports/
+└── <span class="text-blue-400">{topic-slug}</span>-briefing.html   <span class="text-neutral-500"># cria a pasta se não existir</span></pre>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold mb-1">⏱️ Resumen de 60s</div><p class="text-xs text-neutral-400">Nivel decisor: primero el hecho establecido, después la interpretación controvertida.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold mb-1">🏅 5 hallazgos clasificados</div><p class="text-xs text-neutral-400">Por confiabilidad, con calificación del 1 al 10 y etiquetas "apoya/desafía".</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold mb-1">🔗 Conexión oculta</div><p class="text-xs text-neutral-400">El vínculo que solo aparece al cruzar las cinco perspectivas.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold mb-1">🕳️ Sexta perspectiva ausente</div><p class="text-xs text-neutral-400">El punto ciego como la lente que podría cambiarlo todo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold mb-1">🎯 Insight accionable</div><p class="text-xs text-neutral-400">3–6 acciones específicas para el lector objetivo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold mb-1">🛟 Seguridad de las afirmaciones + frontera + referencias</div><p class="text-xs text-neutral-400">Qué afirmar, matizar o evitar; la pregunta de frontera; referencias con etiqueta de estado.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">✓ Cómo tratar la plantilla</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Clonar la estructura y completar los campos</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Mantener el CSS, las fuentes y el resaltado azul</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Dejar las notas y puntuaciones vacías para que la Fase 4 las complete</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Qué NO hacer</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Recrear el CSS desde cero o cambiar el aspecto</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Inventar notas de confianza antes de la verificación</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Omitir secciones «porque no hubo tiempo»</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">✅ Fase 4 — Revisión adversarial + verificación</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t5-p1">Es la fase en la cima de la escalera — y la que <strong class="text-blue-400">NO se puede omitir</strong>. Un informe entregado sin la Fase 4 no es Storm Research. Tiene tres partes: autoevaluación, verificación de citas y aplicación de las correcciones.</p>
+<div class="space-y-4 mb-6">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">🪞</span> 4a · Autoevaluación (interna)</h3>
+<ul class="space-y-1.5 text-neutral-300 text-sm list-disc pl-5">
+<li>Califica cada uno de los 5 hallazgos del 1 al 10 en confiabilidad, con una justificación.</li>
+<li>Identificar el eslabón más débil y qué lo verificaría.</li>
+<li>Revisa el sesgo: qué perspectiva dominó la síntesis y qué se subestimó.</li>
+<li>Nombrar la sexta perspectiva ausente y dar una calificación general honesta.</li>
+</ul>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">🔬</span> 4b · Verificar cada cita</h3>
+<p class="text-neutral-300 text-sm mb-3">~4 a 6 agentes <code class="font-mono">general-purpose</code> en paralelo, <strong>uno por cluster</strong> de citas relacionadas. Cada uno verifica la afirmación con la fuente primaria real (no con resúmenes de blogs) y emite un veredicto:</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">CONFIRMADO</span>
+<span class="px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">CONFIRMADO PARCIALMENTE</span>
+<span class="px-2.5 py-1 rounded-full bg-dark-700 border border-dark-600 text-neutral-300 text-xs font-semibold">NO VERIFICADO</span>
+<span class="px-2.5 py-1 rounded-full bg-red-900/20 border border-red-500/30 text-red-400 text-xs font-semibold">FALSO</span>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">🩹</span> 4c · Aplicar correcciones</h3>
+<ul class="space-y-1.5 text-neutral-300 text-sm list-disc pl-5">
+<li>Corrige números, títulos y fechas incorrectos; baja la calificación cuando la evidencia sea débil.</li>
+<li>Enviar preprints y afirmaciones cuestionadas a la barra lateral de «señal cuestionada».</li>
+<li>Completar el banner: <code class="font-mono text-blue-400">X fabricadas, Y corrigidas, Z rebaixadas</code> y las etiquetas por cita.</li>
+</ul>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">✓ Lo que garantiza la Fase 4</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Cada cita apunta a la fuente primaria real</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>El banner de verificación es verdadero</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Los números débiles se degradan, no se ocultan</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Saltarse la Fase 4 significa</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Citas que quizá ni existan se presentan como verdaderas</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Calificaciones de confianza sin fundamento</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Deja de ser un informe STORM</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">📤 El resultado final</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t6-p1">La entrega es la <strong class="text-blue-400">versión v2 posterior a la verificación</strong> del briefing. Claude intenta abrir el archivo en tu navegador con el abridor de la plataforma y resume lo esencial en el chat.</p>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">abrir el briefing</span><span class="text-xs text-neutral-500">Linux / macOS / Windows</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-neutral-500"># Linux</span>
+xdg-open storm-reports/<span class="text-blue-400">{slug}</span>-briefing.html
+<span class="text-neutral-500"># macOS</span>   open storm-reports/<span class="text-blue-400">{slug}</span>-briefing.html
+<span class="text-neutral-500"># Windows</span> start "" storm-reports\<span class="text-blue-400">{slug}</span>-briefing.html</pre>
+</div>
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center"><span class="mr-2">💬</span> Lo que va en el chat (breve)</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span>La ruta del archivo.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span>El marcador: <code class="font-mono text-blue-400">N/N checadas, X fabricadas, Y corrigidas, Z rebaixadas</code>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span>El hallazgo universal y la pregunta de frontera.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span>El resumen de seguridad de las afirmaciones: qué es seguro afirmar × qué evitar.</span></li>
+</ul>
+</div>
+<!-- TIMELINE dos 6 passos -->
+<h3 class="text-lg font-semibold mb-4 flex items-center"><span class="mr-2">🧭</span> El pipeline completo, en 6 pasos</h3>
+<div class="mb-8">
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">0</span>
+<span aria-hidden="true" class="w-px flex-1 bg-blue-500/30 my-1"></span>
+</div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600 mb-4"><h4 class="font-semibold mb-1">Alcance</h4><p class="text-neutral-300 text-sm">Interpretar el tema, identificar al lector objetivo, derivar el slug y avisar que se ejecutará.</p></div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">1</span>
+<span aria-hidden="true" class="w-px flex-1 bg-blue-500/30 my-1"></span>
+</div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600 mb-4"><h4 class="font-semibold mb-1">Cinco perspectivas en paralelo</h4><p class="text-neutral-300 text-sm">5 agentes en un único mensaje; cada uno devuelve su postura, evidencia con URL y "lo único".</p></div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">2</span>
+<span aria-hidden="true" class="w-px flex-1 bg-blue-500/30 my-1"></span>
+</div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600 mb-4"><h4 class="font-semibold mb-1">Mapa de contradicciones</h4><p class="text-neutral-300 text-sm">Conflictos, evidencia fuerte×débil, pregunta que resuelve, acuerdo universal, punto ciego.</p></div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">3</span>
+<span aria-hidden="true" class="w-px flex-1 bg-blue-500/30 my-1"></span>
+</div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600 mb-4"><h4 class="font-semibold mb-1">Sintetizar el HTML</h4><p class="text-neutral-300 text-sm">Clonar la plantilla y completar todas las secciones; guardar en <code class="font-mono">storm-reports/</code>.</p></div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">4</span>
+<span aria-hidden="true" class="w-px flex-1 bg-blue-500/30 my-1"></span>
+</div>
+<div class="flex-1 bg-dark-800 rounded-xl p-4 border border-dark-600 mb-4"><h4 class="font-semibold mb-1">Revisión + verificación</h4><p class="text-neutral-300 text-sm">Autoevaluación, ~4–6 verificadores por grupo, correcciones y banner veraz.</p></div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-center">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">✓</span>
+</div>
+<div class="flex-1 bg-blue-900/20 rounded-xl p-4 border border-blue-500/30"><h4 class="font-semibold text-blue-400 mb-1">Salida v2</h4><p class="text-neutral-300 text-sm">Abrir el briefing verificado y resumir en el chat: ruta, puntuación, hallazgo universal y límite.</p></div>
+</div>
+</div>
+<!-- CHECAGEM LEVE -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-2-3#q1">
+<p class="font-medium mb-4">Recuperación automática (opcional): ¿qué hace que la Fase 4 sea innegociable en STORM?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Hace que el informe se vea más bonito.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Verifica cada cita con la fuente primaria: sin eso, no es Storm Research.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Agrega más perspectivas al panel de especialistas.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">La fase 0 prepara el enfoque</strong><span class="text-neutral-400"> — interpretación en 1 línea, lector objetivo y <code class="font-mono">topic-slug</code>.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">La fase 1 activa 5 perspectivas en paralelo</strong><span class="text-neutral-400"> — en un único mensaje, &lt;400 palabras, 3 salidas obligatorias.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">La fase 2 cruza las perspectivas</strong><span class="text-neutral-400"> — interna, sin agentes; conflictos, acuerdo universal y punto ciego.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">La fase 3 clona la plantilla</strong><span class="text-neutral-400"> — completa las secciones y guarda en <code class="font-mono">storm-reports/</code>.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">La fase 4 nunca se omite</strong><span class="text-neutral-400"> — la verificación de cada cita y un banner auténtico completan el briefing v2.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-blue-400 mb-2">Siguiente módulo:</h3><p class="text-neutral-300">2.4 — Tu primer informe (manos a la obra)</p></div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la Trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors" href="modulo-2-4.html">Siguiente módulo →</a>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · Curso INEMA · 2026 · <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a></p></div>
+</footer>
+<script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-2-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'Visual não é o ponto. A Fase 4 mexe na confiabilidade do conteúdo, não na aparência.',
+            1: 'Exato: ela confere cada citação contra a fonte primária e preenche o banner real. Sem a Fase 4, não é Storm Research.',
+            2: 'Não — o painel é fixo em 5 lentes. A Fase 4 verifica o que as lentes produziram, não acrescenta lentes.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

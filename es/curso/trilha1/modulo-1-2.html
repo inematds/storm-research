@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="storm-research" name="inema-course"/>
+<meta content="Módulo 1.2 — Las cinco perspectivas de expertos: qué investiga cada perspectiva, los tres resultados obligatorios y por qué juntas cubren los puntos ciegos." name="description"/>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<title>Módulo 1.2 · Las cinco perspectivas de expertos | STORM Research</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5,150,105,0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5,150,105,0.18); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+<link href="https://inematds.github.io/storm-research/curso/trilha1/modulo-1-2.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/storm-research/en/curso/trilha1/modulo-1-2.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/storm-research/es/curso/trilha1/modulo-1-2.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha1/modulo-1-2.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha1/modulo-1-2.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-1-2.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-emerald-400 focus:rounded-lg" href="#conteudo">Saltar al contenido</a>
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10" href="index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Practica</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Avanzado</span>
+</a>
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>Mi recorrido</span>
+<span aria-hidden="true" class="inema-journey-badge" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<div class="relative">
+<button aria-expanded="false" aria-haspopup="true" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" title="Apariencia y lectura" type="button">
+<span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Apariencia</span>
+</button>
+<div class="inema-appearance-pop" data-inema-appearance="" data-open="false" id="appearance-pop" style="right:0;">
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tema</span><div class="inema-segment">
+<button data-inema-set-theme="inema-dark" type="button">Oscuro</button><button data-inema-set-theme="claro" type="button">Claro</button><button data-inema-set-theme="sepia" type="button">Sepia</button><button data-inema-set-theme="contraste" type="button">Alto contraste</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Fuente</span><div class="inema-segment">
+<button data-inema-set-font="inter" type="button">Inter</button><button data-inema-set-font="system" type="button">Sistema</button><button data-inema-set-font="leitura" type="button">Lectura</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tamaño</span><div class="inema-segment">
+<button data-inema-set-fontscale="100" type="button">A</button><button data-inema-set-fontscale="112" type="button">A+</button><button data-inema-set-fontscale="125" type="button">A++</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Interlineado</span><div class="inema-segment">
+<button data-inema-set-leading="1.45" type="button">Compacto</button><button data-inema-set-leading="1.7" type="button">Cómodo</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Acento</span><div class="inema-accent-grid">
+<button data-accent="emerald" data-inema-set-accent="emerald" title="Esmeralda" type="button"></button><button data-accent="blue" data-inema-set-accent="blue" title="Azul" type="button"></button><button data-accent="purple" data-inema-set-accent="purple" title="Morado" type="button"></button><button data-accent="amber" data-inema-set-accent="amber" title="Ámbar" type="button"></button><button data-accent="teal" data-inema-set-accent="teal" title="Teal" type="button"></button><button data-accent="rose" data-inema-set-accent="rose" title="Rosa" type="button"></button>
+</div></div>
+</div>
+</div>
+<button aria-label="Alternar entre claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Alternar entre claro y oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-emerald-400" href="../../index.html">Inicio</a><span>/</span>
+<a class="hover:text-emerald-400" href="index.html">Trilha 1</a><span>/</span>
+<span class="text-emerald-400">Módulo 1.2</span>
+</div>
+</nav>
+<header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MÓDULO 1.2</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🔭 Las cinco perspectivas de especialistas</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">El corazón de STORM son cinco perspectivas fijas: Práctico, Académico, Escéptico, Economista e Historiador. Cada una investiga el mismo tema desde su propio ángulo y siempre devuelve los mismos tres resultados; lo que una pasa por alto, otra lo encuentra. Aquí conoces las cinco, una por una.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">6</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">~45</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Básico</div><div class="text-xs text-neutral-400">Nivel</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Teoría</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<div class="mt-6 max-w-md"><div aria-label="Progreso del módulo 1.2" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:1-2" role="progressbar">
+<div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Progreso del módulo</strong><span class="inema-meter-pct text-emerald-400 font-bold">0%</span></div>
+<div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 de 6 temas leídos</span>
+</div></div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+<!-- TOC -->
+<nav aria-label="Índice de la página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-1">1. El profesional práctico</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-2">2. El académico</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-3">3. El escéptico</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-4">4. El economista</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-5">5. El Historiador</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400 transition-colors" href="#topico-6">6. Por qué cada perspectiva encuentra un punto débil</a></li>
+</ul>
+</nav>
+<main class="inema-prose min-w-0" id="conteudo">
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-1-2#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🛠️ El Profesional Práctico</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t1-p1">La primera lente es quién <strong class="text-emerald-400">trabaja con el tema todos los días</strong>. Investiga fuentes recientes, casos de estudio, debates de operadores y datos de quienes están en la planta. Tiene una sola misión: exponer la <strong class="text-neutral-100">BRECHA</strong> entre lo que el operador práctico sabe en carne propia y lo que académicos y comentaristas simplemente no ven: la fricción del flujo de trabajo, lo que realmente funciona y dónde falla.</p>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> ¿Nuevo por aquí? — «estudio de caso» y «operador × comentarista»</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li><strong>Estudio de caso:</strong> el relato detallado de UNA situación real —una empresa, un proyecto, una implementación— con lo que se intentó, lo que salió bien y lo que salió mal. Vale más que una opinión porque muestra el resultado concreto.</li>
+<li><strong>Operador × comentarista:</strong> el operador es quien usa la herramienta en el día a día y siente dónde se atasca; el comentarista es quien habla de ella desde afuera. Esta perspectiva confía en el operador.</li>
+</ul>
+</div>
+<div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center"><span class="mr-2">📐</span> Los 3 resultados obligatorios: iguales para TODAS las lentes</h3>
+<p class="text-neutral-300 mb-4 text-sm">No importa cuál sea la perspectiva: cada lente devuelve exactamente estos tres bloques. Memoriza la estructura ahora — los temas 2 a 5 solo cambian el contenido.</p>
+<ol class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">1</span><span><strong class="text-neutral-100">POSICIÓN CENTRAL</strong> en 2 frases: la tesis de la lente, breve y directa.</span></li>
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">2</span><span><strong class="text-neutral-100">EVIDENCIA MÁS SÓLIDA</strong> — 3 a 5 viñetas, cada una con un dato concreto + una fuente identificada + una URL.</span></li>
+<li class="flex items-start space-x-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">3</span><span><strong class="text-neutral-100">LO ÚNICO</strong> que solo esa lente diría: el insight que ninguna otra perspectiva aportaría.</span></li>
+</ol>
+</div>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">prompt de la lente (esqueleto compartido)</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">Você é O PROFISSIONAL PRÁTICO para: {TOPIC} ({TOPIC_FRAME}).
+Faça pesquisa real na web. Retorne EXATAMENTE:
+<span class="text-emerald-400">1. POSIÇÃO CENTRAL</span> em 2 frases.
+<span class="text-emerald-400">2. EVIDÊNCIA MAIS FORTE</span> — 3 a 5 bullets, dado + fonte + URL.
+<span class="text-emerald-400">3. A ÚNICA COISA</span> que só um prático diria.
+Menos de 400 palavras.</pre>
+</div>
+<p class="text-neutral-300 mb-4 leading-relaxed">Mira la perspectiva en acción. Tomando como ejemplo <em>"¿Vale la pena invertir en agentes de voz con IA?"</em>, el Práctico devolvería algo así:</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<p class="text-sm text-neutral-300 mb-3"><strong class="text-emerald-400">Posición:</strong> funcionan bien en flujos acotados y repetitivos; fallan en conversaciones largas y ambiguas, donde transferir el caso a una persona se vuelve la norma.</p>
+<p class="text-sm text-neutral-300 mb-3"><strong class="text-emerald-400">Lo único:</strong> "El 80% del esfuerzo de una implementación real no es el modelo de voz: es gestionar las excepciones y el enrutamiento. Quien nunca ha operado un call center subestima esto."</p>
+<p class="text-xs text-neutral-500">Ejemplo ilustrativo: en una ejecución real, cada viñeta de evidencia incluiría una fuente y una URL verificables.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Lo que ve el Práctico</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Dónde falla la herramienta en la práctica</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>La fricción invisible del flujo de trabajo</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Lo que hacen los operadores y nadie documenta</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Su punto ciego</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Puede generalizar demasiado a partir de su propia experiencia</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Una anécdota no siempre es evidencia rigurosa</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Por eso existe la lente siguiente: el Académico</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-1-2#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🎓 El Académico</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t2-p1">A la segunda lente le importa <strong class="text-emerald-400">evidencia revisada por pares y tamaño del efecto</strong>, no con anécdotas. Busca en arXiv, revistas académicas, informes universitarios e institutos de investigación para responder: ¿qué dice REALMENTE la evidencia rigurosa y dónde <strong class="text-neutral-100">contradice el hype</strong>? Y, crucialmente, indica cuándo la evidencia es débil e informa el estado: publicado o preprint.</p>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> ¿Nuevo aquí? — tres términos académicos</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li><strong>Revisión por pares (peer review):</strong> antes de publicar, otros especialistas del área leen y critican el estudio. Si supera el escrutinio → es más confiable. Es el «control de calidad» de la ciencia.</li>
+<li><strong>Tamaño del efecto:</strong> cuánto cambia algo realmente, no solo "si cambió". "Redujo el costo en 3%" y "lo redujo en 60%" pueden ser estadísticamente reales, pero solo uno importa en la práctica.</li>
+<li><strong>Preprint:</strong> un estudio publicado <em>antes</em> de la revisión por pares (p. ej., en arXiv). Puede ser correcto, pero aún no lo verificaron terceros; por eso vale menos en la jerarquía.</li>
+</ul>
+</div>
+<p class="text-neutral-300 mb-4 leading-relaxed">Los mismos 3 resultados del Tema 1, ahora completados desde la perspectiva académica sobre <em>"agentes de voz con IA"</em>:</p>
+<div class="space-y-3 mb-6">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-emerald-400 font-semibold text-sm mb-1">1 · Posición central</div><p class="text-neutral-300 text-sm">Las mejoras medidas en condiciones controladas son reales, pero menores de lo que sugiere el marketing; la mayoría de los estudios sólidos mide tareas específicas, no atención abierta.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-emerald-400 font-semibold text-sm mb-1">2 · Evidencia más sólida</div><p class="text-neutral-300 text-sm">Estudios revisados por pares con un tamaño del efecto declarado &gt; preprints recientes (señalizados como tales) &gt; relatos aislados. Cada viñeta enlaza a un estudio identificado por nombre + URL.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-emerald-400 font-semibold text-sm mb-1">3 · Lo único</div><p class="text-neutral-300 text-sm">"La mitad de las cifras que circulan provienen de preprints o de una sola investigación encargada; tratarlas como hechos consolidados es el error más común."</p></div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📊</span> Evidencia fuerte × débil</h3>
+<p class="text-neutral-300 text-sm">El valor del Académico no es solo aportar estudios, sino <strong>etiquetar la solidez de cada uno</strong>. Un hallazgo causal revisado por pares tiene más peso que un preprint, y este más que una analogía. Esta jerarquía sirve de base para las notas de confiabilidad que verás en la Trilha 3.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-1-2#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🔍 El Escéptico</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t3-p1">La tercera lente parte del principio de que <strong class="text-neutral-100">la visión dominante está exagerada</strong> y construye el <strong class="text-emerald-400">mejor contraargumento posible</strong>. Busca críticas, fracasos documentados, datos contradictorios, cambios regulatorios y refutaciones para responder: ¿cuál es el contraargumento más sólido y qué ignoran convenientemente sus defensores?</p>
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">⚖️</span> Riguroso, sin caprichos</h3>
+<p class="text-neutral-300 text-sm">La regla de oro del Escéptico: ser <strong>riguroso</strong>, no «lleva la contraria por deporte». No niega por reflejo: encuentra la evidencia más sólida que debilita la tesis y la presenta con su fuente. Un escepticismo bien aplicado es el mejor regalo que puede recibir el informe: te muestra cómo podrías estar equivocado <em>antes</em> que sea costoso.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Escepticismo riguroso</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Busca casos de fracaso reales y con nombre</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Aporta datos que contradicen la narrativa</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Construye el contraargumento más sólido, con fuente</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Terquedad disfrazada de escepticismo</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Negarlo todo sin evidencia</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Elegir solo los datos que confirman el "no"</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Confundir el tono irritado con un argumento</span></li>
+</ul>
+</div>
+</div>
+<p class="text-neutral-300 mb-4 leading-relaxed">Acerca de <em>"agentes de voz con IA"</em>, lo único que diría solo el Escéptico:</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<p class="text-sm text-neutral-300 mb-2"><strong class="text-emerald-400">Lo único:</strong> "Las demos impresionan con llamadas cortas y guiones ideales. Los informes de churn y las tasas de escalamiento a una persona —que rara vez aparecen en las presentaciones de ventas— cuentan otra historia."</p>
+<p class="text-xs text-neutral-500">Ejemplo ilustrativo. El Escéptico siempre cita la fuente confiable más sólida en contra que encuentre.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-1-2#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">💰 El Economista</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t4-p1">La cuarta lente tiene un lema: <strong class="text-emerald-400">sigue el dinero</strong>. Investiga ingresos, valoración, tamaño del mercado, flujos de financiamiento, economía unitaria e incentivos para responder: ¿quién se beneficia de la narrativa actual y qué incentivos financieros moldean lo que se investiga y lo que se convierte en hype?</p>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> ¿Nuevo por aquí? — «valoración» y «economía unitaria»</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li><strong>Valuation:</strong> cuánto cree el mercado que vale una empresa (ej.: "startup valorada en US$ 2 bi"). Atención: es una expectativa de futuro, no dinero en caja; puede estar inflada por el hype.</li>
+<li><strong>Economía unitaria:</strong> la ganancia o pérdida en <em>una sola</em> transacción o cliente. Si cada atención por voz cuesta más de lo que genera, la economía unitaria es negativa, y ningún volumen lo soluciona.</li>
+</ul>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold mb-3 flex items-center"><span class="mr-2">🔢</span> Por qué el Economista pide CIFRAS</h3>
+<p class="text-neutral-300 text-sm mb-3">La evidencia de esta lente es distinta de las demás: cada viñeta necesita un <strong class="text-emerald-400">número real</strong> — ingresos, valoración, tamaño del mercado o financiamiento — con la fuente identificada y URL. Una opinión sobre dinero no cuenta; una cifra con fuente, sí.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="bg-dark-900 rounded-lg p-3 border border-dark-600"><div class="text-emerald-400 font-semibold text-xs mb-1">Ingresos y valoración</div><p class="text-xs text-neutral-400">Cuánto ingresa, cuánto proyecta el mercado</p></div>
+<div class="bg-dark-900 rounded-lg p-3 border border-dark-600"><div class="text-emerald-400 font-semibold text-xs mb-1">Tamaño del mercado</div><p class="text-xs text-neutral-400">El pastel total en disputa</p></div>
+<div class="bg-dark-900 rounded-lg p-3 border border-dark-600"><div class="text-emerald-400 font-semibold text-xs mb-1">Financiamiento</div><p class="text-xs text-neutral-400">De dónde viene el capital y por qué</p></div>
+<div class="bg-dark-900 rounded-lg p-3 border border-dark-600"><div class="text-emerald-400 font-semibold text-xs mb-1">Incentivos</div><p class="text-xs text-neutral-400">Quién gana al mantener viva la narrativa</p></div>
+</div>
+</div>
+<p class="text-neutral-300 mb-4 leading-relaxed">Lo único que solo diría el Economista sobre <em>"agentes de voz con IA"</em>:</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<p class="text-sm text-neutral-300"><strong class="text-emerald-400">El insight de «sigue el dinero»:</strong> "Buena parte del entusiasmo está financiada por quienes venden la infraestructura de voz. El incentivo para exagerar el ahorro de costos es estructural: conviene comprobar quién pagó el estudio antes de creer la cifra."</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-1-2#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">🏛️ El Historiador</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t5-p1">La quinta lente ya ha visto ciclos de disrupción antes y <strong class="text-emerald-400">busca patrones</strong>. Investiga paralelismos históricos genuinos —tecnologías anteriores, modas, cambios de mercado— para responder: ¿qué paralelismos realmente encajan y qué aprendemos de cómo se desarrollaron? ¿Quién ganó, quién perdió, qué se estabilizó?</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<h3 class="text-lg font-semibold mb-4 flex items-center"><span class="mr-2">🧭</span> Cómo el Historiador lee un ciclo</h3>
+<div class="space-y-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-900 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold text-sm mb-1">Encuentra el paralelo adecuado</h4><p class="text-neutral-300 text-sm">No cualquier analogía bonita — una que realmente encaje con los mecanismos, no solo con la vibra.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-900 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold text-sm mb-1">Mira cómo terminó</h4><p class="text-neutral-300 text-sm">Fechas y resultados concretos: quién ganó, quién quebró, qué quedó cuando pasó la tormenta.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-900 rounded-xl p-4 border border-dark-600"><h4 class="font-semibold text-sm mb-1">Señala el patrón invisible</h4><p class="text-neutral-300 text-sm">Lo único que solo él diría: el patrón que nadie más percibe porque solo mira el presente.</p></div>
+</div>
+</div>
+</div>
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-emerald-400 mb-2 flex items-center"><span class="mr-2">🕰️</span> Ejemplo del patrón</h3>
+<p class="text-neutral-300 text-sm">Acerca de <em>"agentes de voz con IA"</em>: "Ya vimos esto con los IVR de los años 2000 y los chatbots de 2016: la tecnología resuelve el caso fácil, el público se irrita con el caso difícil y el mercado se estabiliza en un modelo híbrido humano+máquina. El patrón tiende a repetirse." <span class="text-neutral-500">(ilustrativo, con fechas y fuentes de la ejecución real)</span></p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-1-2#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🧠 Por qué cada lente encuentra un vacío</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-2-t6-p1">Las cinco perspectivas no son redundantes: cada una tiene una <strong class="text-neutral-100">prioridad diferente</strong>, así que cada una tropieza con un hecho que las otras pasarían por alto. El Práctico siente la fricción que el Académico no mide; el Académico exige un rigor que el Práctico pasa por alto; el Escéptico encuentra el fracaso que ambos ignoran; el Economista revela el incentivo detrás de todo; y el Historiador muestra que ya vimos esta película. Juntas, producen <strong class="text-emerald-400">cobertura complementaria</strong> — lo que una no encuentra, la otra sí.</p>
+<div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+<svg aria-label="Cinco perspectivas en cian investigan el mismo tema desde distintos ángulos y convergen en un único informe en verde, que luego alimenta el mapa de contradicciones" class="w-full h-auto" role="img" viewbox="0 0 1000 320">
+<defs>
+<lineargradient id="m12-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#34d399"></stop><stop offset="1" stop-color="#10b981"></stop></lineargradient>
+<filter height="180%" id="m12-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m12-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#10b981" opacity="0.1" r="1.3"></circle></pattern>
+<marker id="m12-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#9ca3af"></path></marker>
+<marker id="m12-ahg" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#34d399"></path></marker>
+</defs>
+<rect fill="url(#m12-grid)" height="320" width="1000" x="0" y="0"></rect>
+<text fill="#bfe6ff" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="110" y="18">cinco perspectivas</text>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="695" y="18">un briefing</text>
+<!-- 5 caixas de lente (ciano) -->
+<g font-family="Inter,sans-serif" font-size="12.5">
+<rect fill="#0e1b26" height="36" rx="9" stroke="#38bdf8" stroke-width="1.8" width="160" x="30" y="28"></rect><text fill="#bfe6ff" text-anchor="middle" x="110" y="51">🛠️ práctico</text>
+<rect fill="#0e1b26" height="36" rx="9" stroke="#38bdf8" stroke-width="1.8" width="160" x="30" y="86"></rect><text fill="#bfe6ff" text-anchor="middle" x="110" y="109">🎓 académico</text>
+<rect fill="#0e1b26" height="36" rx="9" stroke="#38bdf8" stroke-width="1.8" width="160" x="30" y="144"></rect><text fill="#bfe6ff" text-anchor="middle" x="110" y="167">🔍 escéptico</text>
+<rect fill="#0e1b26" height="36" rx="9" stroke="#38bdf8" stroke-width="1.8" width="160" x="30" y="202"></rect><text fill="#bfe6ff" text-anchor="middle" x="110" y="225">💰 economista</text>
+<rect fill="#0e1b26" height="36" rx="9" stroke="#38bdf8" stroke-width="1.8" width="160" x="30" y="260"></rect><text fill="#bfe6ff" text-anchor="middle" x="110" y="283">🏛️ historiador</text>
+</g>
+<!-- caminhos convergindo (fan-in) -->
+<g fill="none" opacity="0.6" stroke="#34d399" stroke-width="1.8">
+<path d="M190,46  C420,46  470,150 612,150" marker-end="url(#m12-ahg)"></path>
+<path d="M190,104 C420,104 470,157 612,157" marker-end="url(#m12-ahg)"></path>
+<path d="M190,162 L612,162" marker-end="url(#m12-ahg)"></path>
+<path d="M190,220 C420,220 470,167 612,167" marker-end="url(#m12-ahg)"></path>
+<path d="M190,278 C420,278 470,174 612,174" marker-end="url(#m12-ahg)"></path>
+</g>
+<!-- nó briefing (verde) -->
+<g filter="url(#m12-glow)"><rect fill="#0e2018" height="64" rx="14" stroke="url(#m12-grad)" stroke-width="2.5" width="160" x="615" y="130"></rect></g>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="14" font-weight="700" text-anchor="middle" x="695" y="158">briefing</text>
+<text fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="695" y="178">único · verificado</text>
+<!-- a jusante: mapa de contradições -->
+<path d="M775,162 L850,162" fill="none" marker-end="url(#m12-ahg)" opacity="0.6" stroke="#34d399" stroke-width="1.8"></path>
+<rect fill="#0e2018" height="48" rx="10" stroke="#34d399" stroke-width="1.8" width="120" x="850" y="138"></rect>
+<text fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="910" y="159">mapa de</text>
+<text fill="#a7f3d0" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="910" y="175">contradicciones</text>
+</svg>
+</div>
+<p class="text-xs text-neutral-500 mb-6">Cada recuadro cian es una lente que investiga el MISMO tema desde un ángulo diferente. Las cinco convergen en un único briefing (verde): donde coinciden, surge un hallazgo probable; donde discrepan, alimentan el mapa de contradicciones (Módulo 1.3). Ninguna lente por sí sola ve el panorama completo: la cobertura surge de la suma.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-bold text-sm mb-1">🛠️ Práctico</div><p class="text-xs text-neutral-400">La fricción real del uso</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-bold text-sm mb-1">🎓 Académico</div><p class="text-xs text-neutral-400">El rigor de la evidencia</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-bold text-sm mb-1">🔍 Escéptico</div><p class="text-xs text-neutral-400">El fracaso ignorado</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-bold text-sm mb-1">💰 Economista</div><p class="text-xs text-neutral-400">El incentivo oculto</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-bold text-sm mb-1">🏛️ Historiador</div><p class="text-xs text-neutral-400">El patrón repetido</p></div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Consejo — las cinco se ejecutan EN PARALELO</h3>
+<p class="text-neutral-300 text-sm">Las cinco perspectivas no se hacen una después de otra. STORM lanza los cinco agentes (<strong>subagentes</strong>) en una <strong class="text-emerald-400">único mensaje</strong>, y trabajan al mismo tiempo, sin hablar entre sí. Cada uno investiga por su cuenta; solo al final se reúnen los cinco resultados. Entiendes exactamente cómo funciona en el <strong>Módulo 1.3</strong>.</p>
+</div>
+<!-- CHECAGEM LEVE -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-1-2#q1">
+<p class="font-medium mb-4">Recuperación automática (opcional): ¿qué perspectiva es la que «sigue el dinero» — ingresos, valoración e incentivos?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">El Escéptico</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">El Economista</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">El Historiador</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Cinco perspectivas fijas</strong><span class="text-neutral-400"> — Práctico, Académico, Escéptico, Economista e Historiador, cada una con su prioridad.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Tres respuestas obligatorias</strong><span class="text-neutral-400"> — postura central, evidencia más sólida (con fuente+URL) y «la única cosa».</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Cada lente encuentra un vacío</strong><span class="text-neutral-400"> — lo que una no encuentra, la otra sí; la cobertura surge de la suma.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Se ejecutan en paralelo</strong><span class="text-neutral-400"> — cinco subagentes en un único mensaje, sin conversar entre sí.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-emerald-400 mb-2">Siguiente módulo:</h3><p class="text-neutral-300">1.3 — Subagentes, contradicciones y verificación</p></div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la Trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors" href="modulo-1-3.html">Siguiente módulo →</a>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · Curso INEMA · 2026 · <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a></p></div>
+</footer>
+<script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-1-2#q1', {
+          answer: 1,
+          explain: {
+            0: 'O Cético constrói o contra-argumento mais forte — mas não é ele quem rastreia receita e incentivos.',
+            1: 'Exato: o Economista segue o dinheiro — receita, valuation, tamanho de mercado, financiamento e incentivos.',
+            2: 'O Historiador procura padrões e paralelos no tempo, não os fluxos financeiros.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

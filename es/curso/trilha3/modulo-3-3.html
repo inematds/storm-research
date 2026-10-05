@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="storm-research" name="inema-course"/>
+<meta content="Módulo 3.3 — Personalizar y ampliar STORM: añadir una sexta lente siguiendo exactamente el molde de los prompts, enfocarse en el lector, editar la plantilla con seguridad, elegir el modelo por subagente y llevar los principios a otros flujos." name="description"/>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){var r={};for(var x in o)r[x]=o[x];return r;}
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark === true) html.classList.add('dark'); else if (t.dark === false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+      html.setAttribute('data-font', p.font || 'inter'); html.setAttribute('data-accent', p.accent || 'emerald');
+      var s = html.style, scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale/100).toString()); s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch'); s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system' ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' : (p.font === 'leitura' ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif' : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC = { emerald:[152,76,45], blue:[217,91,60], purple:[258,90,66], amber:[38,92,50], teal:[174,72,41], rose:[350,89,60] };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0]+''); s.setProperty('--accent-s', a[1]+'%'); s.setProperty('--accent-l', a[2]+'%'); s.setProperty('--accent', 'hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<title>Módulo 3.3 · Personalizar y ampliar | STORM Research</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#FACC15', dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' } } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "storm-research",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "1.1 O problema do prompt unico", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "1.2 As cinco lentes", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "1.3 Subagentes, contradicoes e verificacao", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Pratica", "modules": [
+        { "id": "2-1", "title": "2.1 Anatomia da skill", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "2.2 Instalar a skill", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "2.3 O pipeline em 4 fases", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "2.4 Seu primeiro relatorio", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Avancado", "modules": [
+        { "id": "3-1", "title": "3.1 Anatomia do relatorio HTML", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "3.2 O sistema de verificacao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "3.3 Customizar e estender", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "3.4 Boas praticas e armadilhas", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [data-inema-topic], [id^="topico-"] { scroll-margin-top: 5rem; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(185,28,28,0.25); }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+  </style>
+<link href="https://inematds.github.io/storm-research/curso/trilha3/modulo-3-3.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/storm-research/en/curso/trilha3/modulo-3-3.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/storm-research/es/curso/trilha3/modulo-3-3.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha3/modulo-3-3.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha3/modulo-3-3.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-3-3.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-dark-800 focus:text-purple-400 focus:rounded-lg" href="#conteudo">Saltar al contenido</a>
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">🌩️</span><span class="font-bold text-lg hidden sm:inline">STORM Research</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Practica</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10" href="index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Avanzado</span>
+</a>
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors text-sm" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>Mi recorrido</span>
+<span aria-hidden="true" class="inema-journey-badge" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<div class="relative">
+<button aria-expanded="false" aria-haspopup="true" class="inema-appearance-trigger" data-inema-appearance-toggle="#appearance-pop" title="Apariencia y lectura" type="button">
+<span aria-hidden="true">◑</span><span class="hidden sm:inline text-sm">Apariencia</span>
+</button>
+<div class="inema-appearance-pop" data-inema-appearance="" data-open="false" id="appearance-pop" style="right:0;">
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tema</span><div class="inema-segment">
+<button data-inema-set-theme="inema-dark" type="button">Oscuro</button><button data-inema-set-theme="claro" type="button">Claro</button><button data-inema-set-theme="sepia" type="button">Sepia</button><button data-inema-set-theme="contraste" type="button">Alto contraste</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Fuente</span><div class="inema-segment">
+<button data-inema-set-font="inter" type="button">Inter</button><button data-inema-set-font="system" type="button">Sistema</button><button data-inema-set-font="leitura" type="button">Lectura</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Tamaño</span><div class="inema-segment">
+<button data-inema-set-fontscale="100" type="button">A</button><button data-inema-set-fontscale="112" type="button">A+</button><button data-inema-set-fontscale="125" type="button">A++</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Interlineado</span><div class="inema-segment">
+<button data-inema-set-leading="1.45" type="button">Compacto</button><button data-inema-set-leading="1.7" type="button">Cómodo</button>
+</div></div>
+<div class="inema-pref-group"><span class="inema-pref-group__label">Acento</span><div class="inema-accent-grid">
+<button data-accent="emerald" data-inema-set-accent="emerald" title="Esmeralda" type="button"></button><button data-accent="blue" data-inema-set-accent="blue" title="Azul" type="button"></button><button data-accent="purple" data-inema-set-accent="purple" title="Morado" type="button"></button><button data-accent="amber" data-inema-set-accent="amber" title="Ámbar" type="button"></button><button data-accent="teal" data-inema-set-accent="teal" title="Teal" type="button"></button><button data-accent="rose" data-inema-set-accent="rose" title="Rosa" type="button"></button>
+</div></div>
+</div>
+</div>
+<button aria-label="Alternar entre claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Alternar entre claro y oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-purple-400" href="../../index.html">Inicio</a><span>/</span>
+<a class="hover:text-purple-400" href="index.html">Trilha 3</a><span>/</span>
+<span class="text-purple-400">Módulo 3.3</span>
+</div>
+</nav>
+<header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.3</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🧩 Personalizar y ampliar</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">La skill es solo un archivo de texto, así que puedes modificarla a tu gusto. Aquí agregas una 6.ª lente siguiendo exactamente el molde de los prompts originales, orientas todos los informes a tu función, editas la plantilla con seguridad, eliges el modelo por subagente y llevas los dos principios de STORM a otros flujos.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~45</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Avanzado</div><div class="text-xs text-neutral-400">Nivel</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Práctico</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<div class="mt-6 max-w-md"><div aria-label="Progreso del módulo 3.3" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:3-3" role="progressbar">
+<div class="inema-meter-label flex items-center justify-between mb-2"><strong class="text-sm">Progreso del módulo</strong><span class="inema-meter-pct text-purple-400 font-bold">0%</span></div>
+<div class="inema-bar"><span class="inema-bar__fill"></span></div><span class="inema-meter-count text-xs text-neutral-400">0 de 6 temas leídos</span>
+</div></div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+<!-- TOC -->
+<nav aria-label="Índice de la página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-1">1. Agregar una 6.ª lente</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-2">2. Apuntar al lector</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-3">3. Editar la plantilla</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-4">4. Modelo por subagente</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-5">5. Usar con Codex/otros</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400 transition-colors" href="#topico-6">6. Principios STORM a continuación</a></li>
+</ul>
+</nav>
+<main class="inema-prose min-w-0" id="conteudo">
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-3-3#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">➕ Agregar una 6.ª perspectiva</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t1-p1">Las cinco perspectivas son un <strong class="text-neutral-100">un patrón sólido, no una ley</strong>. La Fase 1 del <code class="font-mono text-purple-400">SKILL.md</code> tiene cinco prompts exactos; agregar un sexto consiste en copiar esta plantilla y cambiar el rol. El método mismo ya identifica «la 6.ª perspectiva ausente» como el punto ciego del informe; aquí la conviertes en una perspectiva real, que investiga y responde como las demás.</p>
+<p class="text-neutral-300 mb-6 leading-relaxed">La imagen lo plantea como una ecuación: las cinco lentes estándar, más una nueva que sigue el mismo contrato, suman un informe con un punto ciego menos.</p>
+<div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-3 overflow-hidden">
+<svg aria-label="Ecuación visual: las cinco perspectivas estándar más una sexta que agregas dan como resultado un informe con menos puntos ciegos" class="w-full h-auto" role="img" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="m33-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#c084fc"></stop><stop offset="1" stop-color="#a855f7"></stop></lineargradient>
+<filter height="180%" id="m33-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="2"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m33-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#a855f7" opacity="0.1" r="1.3"></circle></pattern>
+</defs>
+<rect fill="url(#m33-grid)" height="300" width="1000" x="0" y="0"></rect>
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="500" y="28">La ecuación de la 6.ª lente</text>
+<!-- A: as 5 lentes padrão -->
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="160" y="68">las 5 perspectivas predeterminadas</text>
+<rect fill="#1a1230" height="160" rx="14" stroke="url(#m33-grad)" stroke-width="2" width="240" x="40" y="80"></rect>
+<g font-family="Inter,sans-serif" font-size="11">
+<rect fill="#0e1b26" height="20" rx="6" stroke="#38bdf8" stroke-width="1.4" width="204" x="58" y="94"></rect><text fill="#bfe6ff" text-anchor="middle" x="160" y="108">práctico</text>
+<rect fill="#0e1b26" height="20" rx="6" stroke="#38bdf8" stroke-width="1.4" width="204" x="58" y="120"></rect><text fill="#bfe6ff" text-anchor="middle" x="160" y="134">académico</text>
+<rect fill="#0e1b26" height="20" rx="6" stroke="#38bdf8" stroke-width="1.4" width="204" x="58" y="146"></rect><text fill="#bfe6ff" text-anchor="middle" x="160" y="160">escéptico</text>
+<rect fill="#0e1b26" height="20" rx="6" stroke="#38bdf8" stroke-width="1.4" width="204" x="58" y="172"></rect><text fill="#bfe6ff" text-anchor="middle" x="160" y="186">economista</text>
+<rect fill="#0e1b26" height="20" rx="6" stroke="#38bdf8" stroke-width="1.4" width="204" x="58" y="198"></rect><text fill="#bfe6ff" text-anchor="middle" x="160" y="212">historiador</text>
+</g>
+<!-- + -->
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="42" font-weight="700" text-anchor="middle" x="305" y="172">+</text>
+<!-- B: a 6ª lente nova, destacada -->
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="435" y="68">tú agregas</text>
+<g filter="url(#m33-glow)"><rect fill="#1a1230" height="84" rx="14" stroke="url(#m33-grad)" stroke-width="2.6" width="210" x="330" y="118"></rect></g>
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="435" y="152">6.ª perspectiva</text>
+<text fill="#e9d5ff" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="435" y="176">mismo molde, nuevo ángulo</text>
+<!-- = -->
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="42" font-weight="700" text-anchor="middle" x="572" y="172">=</text>
+<!-- C: relatório mais completo -->
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="780" y="68">resultado</text>
+<g filter="url(#m33-glow)"><rect fill="#1a1230" height="160" rx="16" stroke="url(#m33-grad)" stroke-width="2.6" width="360" x="600" y="80"></rect></g>
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="18" font-weight="700" text-anchor="middle" x="780" y="150">informe</text>
+<text fill="#e9d5ff" font-family="Inter,sans-serif" font-size="13" text-anchor="middle" x="780" y="180">con menos puntos ciegos</text>
+</svg>
+</div>
+<p class="text-xs text-neutral-500 mb-6">Cada lente es un ángulo. La 6.ª lente que agregas sigue el MISMO contrato que las otras (las tres salidas obligatorias), por eso el mapa de contradicciones y la síntesis pueden integrarla sin romperse. Un ángulo deliberado más = un vacío menos.</p>
+<div class="bg-purple-500/10 rounded-xl border border-purple-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center"><span class="mr-2">🧷</span> El contrato que NO puedes romper</h3>
+<p class="text-neutral-300 text-sm mb-3">Cada lente de STORM devuelve exactamente tres elementos. La Fase 2 (mapa de contradicciones) y la Fase 3 (síntesis) leen esas tres piezas. Si tu nueva lente no tiene las tres en el mismo formato, la síntesis no puede cruzarla con las demás.</p>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">1.</span><span><strong>POSICIÓN CENTRAL</strong> en 2 frases.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">2.</span><span><strong>EVIDENCIA MÁS SÓLIDA</strong>: de 3 a 5 viñetas, cada una con un dato/caso/fuente identificada + URL.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">3.</span><span><strong>LO ÚNICO</strong> que solo esa lente diría.</span></li>
+</ul>
+</div>
+<!-- COPY-RUN -->
+<div class="bg-dark-800 rounded-xl border border-purple-500/30 overflow-hidden mb-6">
+<div class="px-6 pt-5 pb-3 border-b border-dark-600">
+<span class="inline-block px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[11px] font-bold rounded mb-2">COPIAR · PEGAR · EJECUTAR</span>
+<h3 class="text-lg font-semibold">Parche: agregar la lente «EL PRINCIPIANTE EN IA»</h3>
+<p class="text-neutral-400 text-sm mt-1"><strong class="text-neutral-300">Objetivo:</strong> pegar una 6.ª sección en la Fase 1 de <code class="font-mono">SKILL.md</code>, siguiendo el molde exacto de las lentes existentes, y activar 6 subagentes en vez de 5.</p>
+</div>
+<div class="bg-dark-900 px-6 py-5">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">SKILL.md → Fase 1 → pega después de la lente 5 (EL HISTORIADOR)</span><span class="text-xs text-neutral-500">bloque que puedes copiar</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed whitespace-pre-wrap"><span class="text-purple-400">### 6. O INICIANTE EM IA</span>
+
+Você é O INICIANTE EM IA para: {TOPIC} ({TOPIC_FRAME}). Você é <span class="text-purple-400">&lt;quem o relatório precisa proteger — ex.: alguém que nunca implementou isso e vai decidir só com base neste briefing&gt;</span>. Faça pesquisa real na web priorizando guias de primeiros passos, relatos de quem começou agora, perguntas frequentes e os erros mais comuns de iniciantes.
+
+Mostre o que um iniciante PRECISA saber antes de agir e onde ele tropeça: o atrito de entrada, os pré-requisitos escondidos e as expectativas irreais que o hype cria.
+
+Retorne EXATAMENTE:
+
+1. POSIÇÃO CENTRAL em 2 frases.
+2. EVIDÊNCIA MAIS FORTE, com 3 a 5 bullets, cada um com um guia/relato/dado concreto + fonte nomeada + URL.
+3. A ÚNICA COISA que apenas um iniciante diria.
+
+Cite fontes reais com URLs. Menos de 400 palavras.</pre>
+</div>
+<div class="px-6 py-4 bg-purple-900/10 border-t border-dark-600">
+<p class="text-sm text-neutral-300"><strong class="text-purple-400">Cómo verificar:</strong> ejecuta la skill con tu tema de siempre. En el chat deben aparecer <strong class="text-neutral-100">6 subagentes</strong> ejecutándose en paralelo (no 5). En el informe final, al menos un hallazgo debe provenir claramente de esta perspectiva (el ángulo de quien empieza). Si la síntesis ignora la 6.ª perspectiva, es señal de que se rompió el contrato de las tres salidas: comprueba si las palabras <code class="font-mono">POSIÇÃO CENTRAL</code>, <code class="font-mono">EVIDÊNCIA MAIS FORTE</code> e <code class="font-mono">A ÚNICA COISA</code> están escritas igual que las otras lentes.</p>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Atención al costo (el guardrail predeterminado es 5)</h3>
+<p class="text-neutral-300 text-sm">El método recomienda <strong>no superar las cinco lentes</strong> por defecto: cada perspectiva adicional equivale a ~1 agente más (y un verificador más en la Fase 4). Agregar la 6.ª es una <em>elección consciente</em>: hazlo cuando falte realmente un ángulo (el principiante, el creador de contenido, el regulador). Cambiar "EL PRINCIPIANTE EN IA" por "EL CREADOR DE CONTENIDO" solo requiere cambiar el rol y la frase de investigación; el resto de la estructura queda igual.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-3-3#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🎯 Apuntar al lector (tailored)</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t2-p1">La Fase 0 identifica el <strong class="text-neutral-100">perfil del lector</strong> para orientar el insight accionable y la guía de seguridad de las afirmaciones. En vez de informar esto cada vez, puedes <strong class="text-purple-400">precargar el contexto de tu negocio</strong> — y cada informe ya está dirigido a ti.</p>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">contexto que das una vez (p. ej., CLAUDE.md del proyecto)</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed whitespace-pre-wrap">Sou <span class="text-purple-400">&lt;seu papel — ex.: head de produto de uma fintech&gt;</span>.
+Meu negócio: <span class="text-purple-400">&lt;o que você faz e para quem&gt;</span>.
+Em todo Storm Research, o leitor-alvo sou eu nesse papel,
+salvo se eu disser o contrário.</pre>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Sin contexto (genérico)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>La conclusión práctica se dirige a «un profesional del área» abstracto</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Necesitas adaptar las recomendaciones a tu caso</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>El mismo informe serviría para cualquiera</span></li>
+</ul>
+</div>
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Con contexto (dirigido)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>3 a 6 acciones específicas para TU rol</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>La guía de seguridad habla de tu exposición real</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Menos retrabajo: ya llega listo para aplicar</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">💡</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">El contexto orienta <strong>el insight y la guía de seguridad</strong> — no sesga la investigación de las distintas perspectivas. Cada una sigue investigando de verdad y el escéptico sigue cuestionando tu premisa. Cambias A QUIÉN se dirige el informe, no QUÉ considera verdadero.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-3-3#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🎨 Editar el report-template</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t3-p1">O <code class="font-mono text-purple-400">report-template.html</code> es el molde del briefing. La Fase 3 indica <strong class="text-neutral-100">clonarla, no recrear el CSS</strong>. Personalizar de forma segura es modificar el <em>contenido</em> y en los <em>etiquetas</em> — sin alterar el estilo visual, que el método pide mantener idéntico.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Modifica lo que quieras</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Renombrar o traducir las etiquetas de las secciones</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Agregar una sección nueva (p. ej., "Próximos pasos en mi equipo")</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Cambiar el logotipo/encabezado por el de tu marca</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Ajustar los textos de ayuda de los chips</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ No hagas</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Borrar o reescribir el CSS de la plantilla</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Cambiarlo por otro estilo visual completo</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Quitar el banner de verificación o las etiquetas de estado</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Quitar la sección de referencias</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">edición segura: cambia solo la etiqueta, conserva la estructura/CSS</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-neutral-500">&lt;!-- antes --&gt;</span>
+&lt;h2 class="section-title"&gt;Insight acionável&lt;/h2&gt;
+
+<span class="text-neutral-500">&lt;!-- depois (rótulo seu, classe intacta) --&gt;</span>
+&lt;h2 class="section-title"&gt;O que <span class="text-purple-400">&lt;meu time&gt;</span> faz na segunda-feira&lt;/h2&gt;</pre>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Por qué mantener el CSS</h3>
+<p class="text-neutral-300 text-sm">El diseño (limpio, profesional, Montserrat / Roboto Mono, acento azul) hace que el briefing parezca confiable y sea legible en cualquier máquina, sin necesidad de build. Si cambias todo el estilo, pierdes la coherencia entre informes y corres el riesgo de romper el diseño. Regla práctica: <strong>edita lo que se lee, conserva lo que se ve</strong>.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-3-3#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🧠 Modelo por subagente</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t4-p1">Cada lente es un agente <code class="font-mono text-purple-400">general-purpose</code> independiente. Puedes ejecutar <strong class="text-neutral-100">lentes diferentes en modelos diferentes</strong> (Opus, Sonnet, Haiku) y equilibrar costo y calidad: razonamiento intensivo donde hace falta, modelo ligero cuando la tarea es directa.</p>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">⬆</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Modelo más potente para las perspectivas que requieren razonamiento</h4><p class="text-neutral-300 text-sm">O <strong>escéptico</strong> (construye el mejor contraargumento) y el <strong>académico</strong> (pondera la evidencia y el tamaño del efecto) se benefician de un modelo de razonamiento más robusto.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">⬇</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Modelo ligero para las perspectivas más directas</h4><p class="text-neutral-300 text-sm">La recopilación de datos y cifras paralelos (historiador, parte del enfoque práctico) suele funcionar bien con un modelo más económico: reduces costos sin perder cobertura.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">⚖</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">La verificación (Fase 4) merece cuidado</h4><p class="text-neutral-300 text-sm">Es la etapa que le da honestidad al informe. Si vas a ahorrar, ahorra en las lentes — no en los verificadores que comprueban fuentes primarias.</p></div>
+</div>
+</div>
+<div class="bg-purple-500/10 rounded-xl border border-purple-500/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-purple-400 mb-2 flex items-center"><span class="mr-2">🎚️</span> Es una herramienta avanzada</h3>
+<p class="text-neutral-300 text-sm">El estándar (el mismo modelo para todos) funciona muy bien. Cambia el modelo por subagente solo cuando el costo o el límite de uso se convierta en un problema real, y mide antes de asumir que el modelo más barato redujo la calidad.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-3-3#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">🔀 Usar con Codex y otros agentes</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t5-p1">La skill es <strong class="text-purple-400">autocontenida y portátil</strong>: solo depende de herramientas nativas (agente, escritura, búsqueda/fetch en la web) y de la plantilla en la misma carpeta. Por eso se adapta a otros agentes; solo cambia <strong class="text-neutral-100">dónde está la carpeta</strong>.</p>
+<div class="bg-dark-900 rounded-xl border border-dark-600 p-5 mb-6">
+<div class="flex items-center justify-between mb-3"><span class="text-xs font-mono text-neutral-500">la misma carpeta, en distintos agentes</span><span class="text-xs text-neutral-500">ilustrativo</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">.claude/skills/storm-research/   <span class="text-neutral-500"># Claude Code</span>
+.codex/skills/storm-research/    <span class="text-neutral-500"># Codex</span>
+.agents/skills/storm-research/   <span class="text-neutral-500"># outros agentes</span>
+   ├── SKILL.md
+   └── report-template.html</pre>
+</div>
+<div class="bg-purple-500/10 rounded-xl border border-purple-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-purple-400 mb-4 flex items-center"><span class="mr-2">🧳</span> Por qué es portátil</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Sin scripts externos, APIs ni servicios pagados: solo texto + herramientas nativas.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>Los dos archivos van juntos: <code class="font-mono">SKILL.md</code> + <code class="font-mono">report-template.html</code>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">•</span><span>La misma idea de las 4 fases funciona, siempre que el agente sepa lanzar subagentes en paralelo y buscar en la web.</span></li>
+</ul>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-base font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🟡</span> Lo que puede variar entre agentes</h3>
+<p class="text-neutral-300 text-sm">El nombre exacto de la herramienta de subagentes y de búsqueda puede variar de un agente a otro. Si otro agente no tiene paralelismo de subagentes o acceso a la web, la esencia se mantiene: solo pierdes la ventaja de ejecutar las cinco perspectivas al mismo tiempo.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-3-3#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🌐 Llevar los principios de STORM más allá</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-3-t6-p1">Quita de en medio el HTML y el pipeline, y quedan <strong class="text-neutral-100">dos principios transferibles</strong>: (1) varias perspectivas deliberadas en lugar de una sola, y (2) verificación adversarial antes de confiar. Sirven para mucho más que investigar.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">🏛️ Consejo de decisión</div><p class="text-xs text-neutral-400">Varios roles opinan sobre una elección; la contradicción se convierte en insumo, no en ruido.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">🔥 Roast de tu plan</div><p class="text-xs text-neutral-400">Un agente escéptico ataca deliberadamente tu propuesta antes de que apuestes por ella.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">🔎 Revisión de código con múltiples perspectivas</div><p class="text-xs text-neutral-400">Seguridad, rendimiento y legibilidad como lentes separadas en el mismo diff.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold mb-1">✅ Verificación de datos de cualquier texto</div><p class="text-xs text-neutral-400">La Fase 4 por sí sola: cada afirmación se contrasta con la fuente primaria y se emite un veredicto.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Qué transferir</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Roles deliberados que discrepan a propósito</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Señalar la contradicción en vez de ocultarla</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Verificar antes de afirmar; revelar qué es una hipótesis</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Qué no conviene copiar a ciegas</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Apilar agentes idénticos pensando que así cubres más</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Presentar la convergencia de un panel creado por un autor como consenso</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Omitir la verificación porque «parece correcto»</span></li>
+</ul>
+</div>
+</div>
+<!-- CHECAGEM LEVE -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-3-3#q1">
+<p class="font-medium mb-4">Recuperación automática (opcional): al agregar una 6.ª perspectiva, ¿qué DEBE mantener para que la síntesis siga funcionando?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Un nombre llamativo y un emoji propio</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Las 3 entregas obligatorias: POSICIÓN CENTRAL, EVIDENCIA MÁS FUERTE y LA ÚNICA COSA</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Ejecutar en un modelo distinto al de las otras perspectivas</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído ✓</span>
+</button>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Agregar una lente = copiar el molde</strong><span class="text-neutral-400"> — mismo rol + las 3 salidas obligatorias; de lo contrario, la síntesis no la puede integrar.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">El contexto apunta al lector</strong><span class="text-neutral-400"> — orienta la perspectiva, sin sesgar la investigación de las distintas perspectivas.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Edita el contenido, conserva el CSS</strong><span class="text-neutral-400"> — las etiquetas y secciones sí; todo el estilo visual, no.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Portátil y transferible</strong><span class="text-neutral-400"> — funciona en Codex y otros, y los principios sirven para otros flujos.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8"><h3 class="font-semibold text-purple-400 mb-2">Siguiente módulo:</h3><p class="text-neutral-300">3.4 — Buenas prácticas y errores comunes</p></div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la Trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors" href="modulo-3-4.html">Siguiente módulo →</a>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>STORM Research · Curso INEMA · 2026 · <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a></p></div>
+</footer>
+<script>
+    (function () {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+      const html = document.documentElement;
+      function sync(){ if (html.classList.contains('dark')) { darkIcon.classList.add('hidden'); lightIcon.classList.remove('hidden'); } else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); } }
+      sync();
+      themeToggle && themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark'); const isDark = html.classList.contains('dark'); html.style.colorScheme = isDark ? 'dark' : 'light';
+        try { var p = JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme = isDark ? 'inema-dark' : 'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e){}
+        sync(); if (window.INEMA && INEMA.applyPrefs) try { INEMA.applyPrefs(); } catch(e){}
+      });
+    })();
+    function openModal(){} function closeModal(){}
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') window.INEMA.init();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'Nome e emoji ajudam a leitura, mas não são o que faz a síntese funcionar. O que importa é o formato das saídas.',
+            1: 'Exato: sem as três saídas no mesmo formato das outras lentes, o mapa de contradições e a síntese não conseguem cruzar a lente nova.',
+            2: 'Modelo por subagente é uma escolha de custo/qualidade — não é requisito para a lente entrar na síntese.'
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
